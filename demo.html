@@ -124,7 +124,7 @@ console.log(e);
 
 			for (var x = 0; x < 20; x++)
 			{
-				var tempfile = Object.assign({}, testfileopts[Math.floor(0.5 * testfileopts.length)]); //Fix me, Random
+				var tempfile = Object.assign({}, testfileopts[Math.floor(Math.random() * testfileopts.length)]); //Fix me, Random
 
 				tempfile.name = x + ' ' + tempfile.name;
 				tempfile.id += '_' + x;
