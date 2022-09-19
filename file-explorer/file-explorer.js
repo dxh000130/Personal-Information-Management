@@ -7930,7 +7930,7 @@ console.log(selectanchorpos);
 			var prevenabled = enabled;
 
 			enabled = (!currfolder.waiting && (!('canmodify' in attrs) || attrs.canmodify) && fe.GetNumSelectedItems() > 0);
-
+			
 			if (prevenabled !== enabled)
 			{
 				if (enabled)  node.classList.remove('fe_fileexplorer_disabled');
@@ -7992,8 +7992,19 @@ console.log(selectanchorpos);
 	};
 
 	window.FileExplorer.RegisterTool(1, FileExplorerTool_Delete);
+	
+	
+	var FileExplorerTool_AddAnnotates= function(fe) {
+		if (!(this instanceof FileExplorerTool_AddAnnotates))  return new FileExplorerTool_AddAnnotates(fe);
+		var node = fe.AddToolbarButton('fe_fileexplorer_folder_tool_addannotates', fe.Translate('Add Anotate'));
+		
+		
+	};
 
+	window.FileExplorer.RegisterTool(1,FileExplorerTool_AddAnnotates);
+	
 
+	
 	var FileExplorerTool_ItemCheckboxes = function(fe) {
 		if (!(this instanceof FileExplorerTool_ItemCheckboxes))  return new FileExplorerTool_ItemCheckboxes(fe);
 
@@ -8019,6 +8030,7 @@ console.log(selectanchorpos);
 
 		fe.addEventListener('destroy', DestroyToolHandler);
 	};
+
 
 	window.FileExplorer.RegisterTool(2, FileExplorerTool_ItemCheckboxes);
 })();
