@@ -106,6 +106,14 @@
 
 
 	<script type="text/javascript">
+		// Math.seed = 5;
+		// Math.seededrandom = function (){
+		// 	var max = 4294967296; // 2^32
+		// 	seed = 49734321;
+		// 	seed = (seed * 9301 + 49297) % max;
+		// 	return seed / max;
+		// }
+		
 		var span = document.getElementsByClassName("close")[0];
 		span.onclick = function () {
 			var modal = document.getElementById("annotation-input-modal");
@@ -156,10 +164,10 @@
 				});
 			};
 
-			var GetRandomImageURL = function () {
-				var url = imageurlopts[Math.floor(Math.random() * imageurlopts.length)];
+			var GetRandomImageURL = function (seed) {
+				var url = imageurlopts[Math.floor(seed * imageurlopts.length)];
 
-				url = FormatStr(url, Math.floor(Math.random() * 300) + 200, Math.floor(Math.random() * 300) + 200);
+				url = FormatStr(url, Math.floor(seed * 300) + 200, Math.floor(seed * 300) + 200);
 
 				return url;
 			};
@@ -204,7 +212,7 @@
 					// See the documentation for a better onrefresh implementation.
 					var newentries = [];
 
-					for (var x = 0; x < 10; x++) {
+					for (var x = 0; x < 0; x++) {
 						var tempdir = Object.assign({}, testdiropts[Math.floor(Math.random() * testdiropts.length)]);
 
 						tempdir.name = x + ' ' + tempdir.name;
@@ -213,24 +221,61 @@
 
 						newentries.push(tempdir);
 					}
+					var tempfile = Object.assign({}, testfileopts[Math.floor(0.2 * testfileopts.length)]); //Fix me, Random
 
-					for (var x = 0; x < 20; x++) {
-						var tempfile = Object.assign({}, testfileopts[Math.floor(Math.random() * testfileopts.length)]); //Fix me, Random
+					tempfile.name = x + ' ' + tempfile.name;
+					tempfile.id += '_' + x;
+					tempfile.hash += '_' + x;
+					if (tempfile.thumb) tempfile.thumb = GetRandomImageURL(0.2);
 
-						tempfile.name = x + ' ' + tempfile.name;
-						tempfile.id += '_' + x;
-						tempfile.hash += '_' + x;
-						if (tempfile.thumb) tempfile.thumb = GetRandomImageURL();
+					newentries.push(tempfile);
+					var tempfile = Object.assign({}, testfileopts[Math.floor(0.6 * testfileopts.length)]); //Fix me, Random
 
-						newentries.push(tempfile);
-					}
+					tempfile.name = x + ' ' + tempfile.name;
+					tempfile.id += '_' + x;
+					tempfile.hash += '_' + x;
+					if (tempfile.thumb) tempfile.thumb = GetRandomImageURL(0.34);
 
-					newentries.push({ name: 'data1', type: 'folder', id: 'data1', hash: 'data1' });
+					newentries.push(tempfile);
+					var tempfile = Object.assign({}, testfileopts[Math.floor(0.9832 * testfileopts.length)]); //Fix me, Random
+
+					tempfile.name = x + ' ' + tempfile.name;
+					tempfile.id += '_' + x;
+					tempfile.hash += '_' + x;
+					if (tempfile.thumb) tempfile.thumb = GetRandomImageURL(0.5645);
+
+					newentries.push(tempfile);
+					var tempfile = Object.assign({}, testfileopts[Math.floor(0.012 * testfileopts.length)]); //Fix me, Random
+
+					tempfile.name = x + ' ' + tempfile.name;
+					tempfile.id += '_' + x;
+					tempfile.hash += '_' + x;
+					if (tempfile.thumb) tempfile.thumb = GetRandomImageURL(0.3534);
+
+					newentries.push(tempfile);
+					var tempfile = Object.assign({}, testfileopts[Math.floor(0.7 * testfileopts.length)]); //Fix me, Random
+
+					tempfile.name = x + ' ' + tempfile.name;
+					tempfile.id += '_' + x;
+					tempfile.hash += '_' + x;
+					if (tempfile.thumb) tempfile.thumb = GetRandomImageURL(0.987);
+
+					newentries.push(tempfile);
+					// for (var x = 0; x < 20; x++) {
+					// 	var tempfile = Object.assign({}, testfileopts[Math.floor(Math.random() * testfileopts.length)]); //Fix me, Random
+					//
+					// 	tempfile.name = x + ' ' + tempfile.name;
+					// 	tempfile.id += '_' + x;
+					// 	tempfile.hash += '_' + x;
+					// 	if (tempfile.thumb) tempfile.thumb = GetRandomImageURL();
+					//
+					// 	newentries.push(tempfile);
+					// }
+
+					newentries.push({ name: 'Test', type: 'folder', id: 'data1', hash: 'data1' });
 					newentries.push({ name: 'data10', type: 'folder', id: 'data10', hash: 'data10' });
-					newentries.push({ name: 'data2', type: 'folder', id: 'data2', hash: 'data2' });
-					newentries.push({ name: 'data3', type: 'folder', id: 'data3', hash: 'data3' });
-					newentries.push({ name: 'data4', type: 'folder', id: 'data4', hash: 'data4' });
-					newentries.push({ name: 'data5', type: 'folder', id: 'data5', hash: 'data5' });
+					newentries.push({ name: 'CS705', type: 'folder', id: 'data2', hash: 'data2' });
+
 
 					if (this.IsMappedFolder(folder)) folder.SetEntries(newentries);
 				},
