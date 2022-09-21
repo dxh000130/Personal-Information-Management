@@ -7392,7 +7392,6 @@
 
 	window.FileExplorer.RegisterTool(1, FileExplorerTool_Delete);
 
-
 	var FileExplorerTool_AddAnnotates = function (fe) {
 		if (!(this instanceof FileExplorerTool_AddAnnotates)) return new FileExplorerTool_AddAnnotates(fe);
 		var enabled = false;
@@ -7413,19 +7412,17 @@
 		fe.addEventListener('update_tool', UpdateToolHandler);
 
 		var ClickHandler = function (e) {
-			// Get the modal
-			var modal = document.getElementById("annotation-input-modal");
+			modal = document.getElementById("annotation-input-modal");
 			modal.style.display = "block";
 		};
 		node.addEventListener('click', ClickHandler);
 	};
-
 	window.FileExplorer.RegisterTool(1, FileExplorerTool_AddAnnotates);
-	window.onclick = function (event) {
-		if (event.target == modal) {
-			modal.style.display = "none";
-		}
-	}
+	// var span = document.getElementsByClassName("close");
+	// span.onclick = function () {
+	// 	console.log("close");
+	// 	modal.style.display = "none";
+	// }
 
 	var FileExplorerTool_ItemCheckboxes = function (fe) {
 		if (!(this instanceof FileExplorerTool_ItemCheckboxes)) return new FileExplorerTool_ItemCheckboxes(fe);
@@ -7456,8 +7453,3 @@
 
 	window.FileExplorer.RegisterTool(2, FileExplorerTool_ItemCheckboxes);
 })();
-
-var span = document.getElementsByClassName("close");
-span.onclick = function () {
-	modal.style.display = "none";
-}
