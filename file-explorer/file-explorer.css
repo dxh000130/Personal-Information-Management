@@ -75,6 +75,8 @@
 .fe_fileexplorer_wrap .fe_fileexplorer_folder_tool_cut::before { background-image: url('fileexplorer_sprites.png'); background-position: -48px -120px; }
 .fe_fileexplorer_wrap .fe_fileexplorer_folder_tool_delete::before { background-image: url('fileexplorer_sprites.png'); background-position: -72px -120px; }
 
+.fe_fileexplorer_wrap .fe_fileexplorer_folder_tool_addannotates::before { background-image: url('../artwork/pngs/fileexplorer_addannotation.png'); }
+
 .fe_fileexplorer_wrap .fe_fileexplorer_folder_tool_item_checkboxes::before { background-image: url('fileexplorer_sprites.png'); background-position: -72px -144px; }
 .fe_fileexplorer_wrap .fe_fileexplorer_show_item_checkboxes .fe_fileexplorer_folder_tool_item_checkboxes::before { background-image: url('fileexplorer_sprites.png'); background-position: -0px -120px; }
 
