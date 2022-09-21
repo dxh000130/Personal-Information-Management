@@ -1543,8 +1543,8 @@
 		};
 
 		// Sets a text segment's displayed text in the status bar.
-		$this.SetNamedStatusBarText = function (name, text, timeout) {
-			if (destroyinprogress) return;
+		$this.SetNamedStatusBarText = function(name, text, timeout, onClick) {
+			if (destroyinprogress)  return;
 
 			if (!(name in elems.statusbartextsegmentmap)) {
 				elems.statusbartextsegmentmap[name] = { pos: elems.statusbartextsegments.length, timeout: null };
@@ -1553,6 +1553,9 @@
 
 				elems.statusbartextsegments.push(node);
 				elems.statusbartextwrap.appendChild(node);
+				if (onClick) {
+					node.addEventListener('click', onClick);
+				}
 			}
 
 			var currsegment = elems.statusbartextsegmentmap[name];
