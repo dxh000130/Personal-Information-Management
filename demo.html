@@ -536,6 +536,17 @@ console.log(options);
 		}
 
 	});
+	fe.SetNamedStatusBarText('toggleTreeView', 'Tree View', null, () => {
+		const currentDir = fe.GetCurrentFolder().GetPath();
+
+		if (currentDir[0][0] === 'Tree View') {
+			fe.SetPath(previousDir)
+		} else {
+			previousDir = fe.GetCurrentFolder().GetPath();
+			fe.SetPath([['Tree View', 'Tree View', { canmodify: false }]])
+		}
+
+	});
 
 //fe.Focus();
 
