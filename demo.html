@@ -14,6 +14,7 @@
 			position: relative;
 			color: #222222;
 			font-size: 1.0em;
+			border:rgb(42, 123, 177)
 		}
 
 		html.embed,
@@ -36,28 +37,7 @@
 		html.embed #filemanager {
 			height: 96vh;
 		}
-		/* Tag */
-		.fe_fileexplorer_tag_tool {
-			background: url(./artwork/biaoqian.svg) no-repeat center/80%
-		}
 
-		.tag-contained {
-			background: url(./artwork/fileexplorer_checkbox.svg) no-repeat center/80%
-		}
-
-		.tag-list {
-			margin: 0;
-			min-width: 120px;
-			border-right: 1px gray solid;
-		}
-
-		.fe_fileexplorer_items_scroll_wrap {
-			display: flex;
-		}
-
-		.fe_fileexplorer_items_scroll_wrap_inner {
-			flex-grow: 1;
-		}
 		/* The Modal (background) */
 		.modal {
 			display: none;
@@ -86,9 +66,23 @@
 			margin: 15% auto;
 			/* 15% from the top and centered */
 			padding: 20px;
-			border: 1px solid #888;
+			border: 2px solid rgb(34, 85, 180);
+			border-radius: 6px;
 			width: 50%;
 			/* Could be more or less, depending on screen size */
+		}
+		.btnStyle {
+
+			padding: .3em .8em;
+			border: 1px solid #888;
+			/*background: #58a linear-gradient(#77a0bb,#58a);*/
+			background: rgb(213, 232, 245) linear-gradient(hsla(0,0%,100%,.2),transparent);
+			border-radius: .2em;
+			/*box-shadow: 0 .05em .25em gray;*/
+			box-shadow: 0 .05em .25em rgba(0,0,0,.5);
+			color: rgb(122, 122, 122);
+			font-size: 125%;
+			line-height: 1.5;
 		}
 
 		/* The Close Button */
@@ -116,9 +110,9 @@
 			<div class="modal-content">
 				<span class="close">&times;</span>
 				<div style="display:flex; flex-direction:column; align-items: center; justify-content: center;">
-					<p>Enter annotation: </p>
-					<input style="margin: 2vh; width: 25vw" type="text" id="annotation-input" />
-					<button id="annotation-input-submit" style="width: 8vw">Submit</button>
+					<p style = "font-size:125%;">File Annotation </p>
+					<input style="margin: 2vh; width: 25vw;padding: 10px 0px;font-size: 125%;" type="text" id="annotation-input" />
+					<button class = "btnStyle" id="annotation-input-submit">Submit</button>
 				</div>
 			</div>
 
