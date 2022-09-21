@@ -7996,8 +7996,23 @@ console.log(selectanchorpos);
 	
 	var FileExplorerTool_AddAnnotates= function(fe) {
 		if (!(this instanceof FileExplorerTool_AddAnnotates))  return new FileExplorerTool_AddAnnotates(fe);
-		var node = fe.AddToolbarButton('fe_fileexplorer_folder_tool_addannotates', fe.Translate('Add Anotate'));
-		
+		var enabled = false;
+		var node = fe.AddToolbarButton('fe_fileexplorer_folder_tool_addannotates', fe.Translate('Add Anotatition'));
+		var UpdateToolHandler = function(currfolder, attrs) {
+			var prevenabled = enabled;
+
+			enabled = (!currfolder.waiting && (!('canmodify' in attrs) || attrs.canmodify) && fe.GetNumSelectedItems());
+
+			if (prevenabled !== enabled)
+			{
+				if (enabled)  node.classList.remove('fe_fileexplorer_disabled');
+				else  node.classList.add('fe_fileexplorer_disabled');
+
+				fe.ToolStateUpdated();
+			}
+		};
+
+		fe.addEventListener('update_tool', UpdateToolHandler);
 		
 	};
 
