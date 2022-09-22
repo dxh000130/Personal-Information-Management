@@ -545,7 +545,8 @@ console.log(options);
 
 		ondelete: function(deleted, folder, ids, entries, recycle) {
 			// Ask the user if they really want to delete/recycle the items.
-			if (!recycle && !confirm('Are you sure you want to permanently delete ' + (entries.length == 1 ? '"' + entries[0].name + '"' : entries.length + ' items') +  '?'))  deleted('Cancelled deletion');
+			const confirmation = confirm('Are you sure you want to permanently delete ' + (entries.length == 1 ? '"' + entries[0].name + '"' : entries.length + ' items') +  '?')
+			if (!recycle && !confirmation)  deleted('Cancelled deletion');
 			else
 			{
 				// Simulate network delay.
