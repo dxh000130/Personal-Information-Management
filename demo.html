@@ -9,6 +9,10 @@
 
 <body>
 	<style type="text/css">
+		li{
+			font-size: 120%;
+			margin:15% auto;
+		}
 		body {
 			font-family: Verdana, Arial, Helvetica, sans-serif;
 			position: relative;
@@ -90,27 +94,34 @@
 			border: 2px solid rgb(34, 85, 180);
 			border-radius: 6px;
 			width: 50%;
-			/* Could be more or less, depending on screen size */
 		}
+		
 		.btnStyle {
-
 			padding: .3em .8em;
 			border: 1px solid #888;
 			/*background: #58a linear-gradient(#77a0bb,#58a);*/
-			background: rgb(213, 232, 245) linear-gradient(hsla(0,0%,100%,.2),transparent);
+			background: linear-gradient(hsla(0,0%,100%,.2),transparent);
 			border-radius: .2em;
 			/*box-shadow: 0 .05em .25em gray;*/
-			box-shadow: 0 .05em .25em rgba(0,0,0,.5);
 			color: rgb(122, 122, 122);
 			font-size: 125%;
 			line-height: 1.5;
+			transition: .3s;
+			width: 25vw;
 		}
+		
+		.btnStyle:hover{
+		color: var(--primary-color);
+		border-color: currentColor;
+		background-color: var(--primary-background-color);
+		}
+	
 
 		/* The Close Button */
 		.close {
 			color: #aaa;
 			float: right;
-			font-size: 28px;
+			font-size: 35px;
 			font-weight: bold;
 		}
 
@@ -120,6 +131,42 @@
 			text-decoration: none;
 			cursor: pointer;
 		}
+
+		.inputStyle{
+			margin: 2vh; 
+			width: 25vw;
+			padding: 10px 0px;
+			font-size: 125%;
+			border-top-width: 0px;
+ 			border-right-width: 0px;
+			border-bottom-width: 1px;
+ 			border-left-width: 0px;
+			outline: none;
+			text-align: center;
+		}
+
+		.inputStyle:hover{
+			border-color: var(--primary-color);
+		}
+
+		.inputStyle:focus{
+			border-color: var(--primary-color);
+		}
+
+		.fe_fileexplorer_statusbar_text_segment_wrap{
+			height: 30px;
+			font-size:125%;
+		}
+
+		.fe_fileexplorer_statusbar_text_segment_wrap:focus{
+			background-color: var(--primary-color);
+		}
+		
+		:root{
+  		--primary-color: rgb(34, 85, 180);
+		--primary-background-color:rgb(213, 232, 245);
+		}
+
 	</style>
 
 	<link rel="stylesheet" type="text/css" href="file-explorer/file-explorer.css">
@@ -131,9 +178,9 @@
 			<div class="modal-content">
 				<span class="close">&times;</span>
 				<div style="display:flex; flex-direction:column; align-items: center; justify-content: center;">
-					<p style = "font-size:125%;">File Annotation </p>
-					<input style="margin: 2vh; width: 25vw;padding: 10px 0px;font-size: 125%;" type="text" id="annotation-input" />
-					<button class = "btnStyle" id="annotation-input-submit">Submit</button>
+					<p style = "font-size:125%;color:#888">File Annotation </p>
+					<input class = "inputStyle" type="text" id="annotation-input" />
+					<button class = "btnStyle" id="annotation-input-submit">Save</button>
 				</div>
 			</div>
 
@@ -217,10 +264,10 @@
 	})(fileTree['/'])
 
 	const allTags = {
-		tag1: new Set(),
-		tag2: new Set(),
-		tag3: new Set(),
-		tag4: new Set(),
+		Tag1: new Set(),
+		Tag2: new Set(),
+		Tag3: new Set(),
+		Tag4: new Set(),
 	};
 	const tagList = document.createElement('ul');
 
