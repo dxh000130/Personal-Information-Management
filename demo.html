@@ -298,7 +298,12 @@ console.log(e);
 			const ids = folder.GetPathIDs();
 			const firstId = ids[0];
 
+			if (firstId === 'HFO View') {
+				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
+				let dir = fileTree['/'];
+			}
 			if (firstId === 'Tag View') {
+				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
 				const folder = fe.GetCurrentFolder();
 				folder.SetEntries([]);
 
@@ -315,7 +320,10 @@ console.log(e);
 				containerEl.prepend(tagList);
 				return;
 			}
+			if (firstId === 'Tree Visualization') {
+				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='none';
 
+			}
 			tagList.remove();
 			tagList.innerHTML = '';
 			let dir = fileTree['/'];
@@ -525,6 +533,17 @@ console.log(options);
 
 
 	let previousDir;
+	fe.SetNamedStatusBarText('toggleHFOView', 'HFO View', null, () => {
+		const currentDir = fe.GetCurrentFolder().GetPath();
+
+		if (currentDir[0][0] === 'HFO View') {
+			fe.SetPath(previousDir)
+		} else {
+			previousDir = fe.GetCurrentFolder().GetPath();
+			fe.SetPath([['HFO View', 'HFO View', { canmodify: true }]])
+		}
+
+	});
 	fe.SetNamedStatusBarText('toggleTagView', 'Tag View', null, () => {
 		const currentDir = fe.GetCurrentFolder().GetPath();
 
@@ -532,18 +551,18 @@ console.log(options);
 			fe.SetPath(previousDir)
 		} else {
 			previousDir = fe.GetCurrentFolder().GetPath();
-			fe.SetPath([['Tag View', 'Tag View', { canmodify: false }]])
+			fe.SetPath([['Tag View', 'Tag View', { canmodify: true }]])
 		}
 
 	});
-	fe.SetNamedStatusBarText('toggleTreeView', 'Tree View', null, () => {
+	fe.SetNamedStatusBarText('toggleTreeView', 'Tree Visualization', null, () => {
 		const currentDir = fe.GetCurrentFolder().GetPath();
 
-		if (currentDir[0][0] === 'Tree View') {
+		if (currentDir[0][0] === 'Tree Visualization') {
 			fe.SetPath(previousDir)
 		} else {
 			previousDir = fe.GetCurrentFolder().GetPath();
-			fe.SetPath([['Tree View', 'Tree View', { canmodify: false }]])
+			fe.SetPath([['Tree Visualization', 'Tree Visualization', { canmodify: false }]])
 		}
 
 	});
