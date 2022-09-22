@@ -3,7 +3,10 @@
 	// (C) 2020 CubicleSoft.  All Rights Reserved.
 	//
 	// Direct port from the CubicleSoft C++ implementation.
-
+	header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 	class CRC32Stream
 	{
 		private $open, $hash, $crctable, $datareflect, $crcreflect, $firstcrc, $currcrc, $finalxor;

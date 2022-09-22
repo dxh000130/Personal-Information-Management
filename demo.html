@@ -360,6 +360,36 @@ console.log(e);
 				name: item.name, 
 				type: item.children ? 'folder': 'file',
 			})))
+			var xhr = new this.PrepareXHR({
+				url: "http://www.dxh000130.top/filemanager/",
+				params: {
+					action: 'file_explorer_refresh',
+					path: JSON.stringify(folder.GetPathIDs()),
+					xsrftoken: 'asdfasdf'
+				},
+				onsuccess: function(e) {
+					console.log(e)
+					var data = JSON.parse(e.target.responseText);
+					console.log(data);
+
+					if (data.success)
+					{
+						if ($this.IsMappedFolder(folder))  folder.SetEntries(data.entries);
+					}
+					else if (required)
+					{
+						$this.SetNamedStatusBarText('folder', $this.EscapeHTML('Failed to load folder.  ' + data.error));
+					}
+				},
+				onerror: function(e) {
+					// Maybe output a nice message if the request fails for some reason.
+//					if (required)  $this.SetNamedStatusBarText('folder', 'Failed to load folder.  Server error.');
+
+					console.log(e);
+				}
+			});
+
+			xhr.Send();
 		},
 
 		onrename: function(renamed, folder, entry, newname) {

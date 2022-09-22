@@ -1,7 +1,10 @@
 <?php
 	// ZIP file stream writer.  Uses DeflateStream and CRC32Stream.
 	// (C) 2020 CubicleSoft.  All Rights Reserved.
-
+	header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 	// NOTE:  There is no such thing as a ZipStreamReader.  ZIP files have to be complete in order to read them.
 	class ZipStreamWriter
 	{
@@ -205,6 +208,7 @@
 			header("Content-Disposition: attachment; filename=\"" . str_replace(array("\"", "'", "\\", "/", ";", "\r", "\n"), "_", $filename) . "\"");
 			header("Pragma: no-cache");
 			header("Cache-Control: no-cache, no-store");
+            header("Access-Control-Allow-Origin: *");//CORS
 		}
 
 		public function Init()
