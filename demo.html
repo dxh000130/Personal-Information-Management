@@ -215,37 +215,6 @@
 	const fileTree = {
 		'/': {
 			children: {
-				'folder1': {
-					children: {
-						'file1.txt': { },
-						'file2.txt': { },
-						'file3.txt': { },
-						'file4.txt': { },
-						'file5.txt': { },
-						'folder11': { 
-							children: {},
-						},
-						'folder12': {
-							 children: {
-								'file11': {  },
-								'file12': {  },
-								'file13': {  },
-							}
-						},
-						'folder13': { 
-							children: {},
-						},
-					},
-				},
-				'folder2': { 
-					children: {
-						'file22.txt': { },
-						'file23.txt': { },
-					}
-				},
-				'folder3': {
-					children: {},
-				},
 			},
 		}
 	};
@@ -355,10 +324,12 @@ console.log(e);
 			item_checkboxes: true
 		},
 
-		onrefresh: function(folder, required) {
+		onrefresh: async function(folder, required) {
 			var newentries = [];
 			const ids = folder.GetPathIDs();
 			const firstId = ids[0];
+			await AddFilesFromServer(this, fileTree["/"].children, folder, ["/"])
+			console.log(fileTree)
 
 			if (firstId === 'HFO View') {
 				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
@@ -402,41 +373,13 @@ console.log(e);
 				throw new Error(`${ids.join('/')} is not a dir`);
 			}
 
-			folder.SetEntries(Object.values(dir.children).map(item => ({
+			await folder.SetEntries(Object.values(dir.children).map(item => ({
 				id: item.id,
-				name: item.name, 
+				name: item.name,
 				type: item.children ? 'folder': 'file',
+				hash: item.hash,
+				tooltip:item.tooltip,
 			})))
-			var xhr = new this.PrepareXHR({
-				url: "http://www.dxh000130.top/filemanager/",
-				params: {
-					action: 'file_explorer_refresh',
-					path: JSON.stringify(folder.GetPathIDs()),
-					xsrftoken: 'asdfasdf'
-				},
-				onsuccess: function(e) {
-					console.log(e)
-					var data = JSON.parse(e.target.responseText);
-					console.log(data);
-
-					if (data.success)
-					{
-						if ($this.IsMappedFolder(folder))  folder.SetEntries(data.entries);
-					}
-					else if (required)
-					{
-						$this.SetNamedStatusBarText('folder', $this.EscapeHTML('Failed to load folder.  ' + data.error));
-					}
-				},
-				onerror: function(e) {
-					// Maybe output a nice message if the request fails for some reason.
-//					if (required)  $this.SetNamedStatusBarText('folder', 'Failed to load folder.  Server error.');
-
-					console.log(e);
-				}
-			});
-
-			xhr.Send();
 		},
 
 		onrename: function(renamed, folder, entry, newname) {
@@ -688,6 +631,57 @@ console.log(options);
 	}, 20000);
 */
 })();
+		async function AddFilesFromServer(this1, filetree, folder, path){
+			console.log("path",path)
+			var xhr = await new this1.PrepareXHR({
+				url: "http://www.dxh000130.top/filemanager/",
+				params: {
+					action: 'file_explorer_refresh',
+					path: JSON.stringify(path),
+					xsrftoken: 'asdfasdf'
+				},
+				onsuccess: function(e) {
+					//console.log(e)
+					var data = JSON.parse(e.target.responseText);
+					//console.log("DatafromServer", data.entries);
+
+					if (data.success)
+					{
+						//if ($this2.IsMappedFolder(folder))  folder.SetEntries(data.entries);
+						data.entries.forEach(function(element) {
+							if (element.type === "folder"){
+								//console.log("Folder", element)
+								filetree[element.name] = {
+									children:{},
+									"hash":element.hash, "tooltip":element.tooltip
+								}
+								path.push(element.name)
+								AddFilesFromServer(this1, filetree[element.name].children, folder, path)
+							}else {
+								//console.log("File", element)
+								filetree[element.name] = {
+									"hash":element.hash, "tooltip":element.tooltip
+								}
+							}
+						})
+
+
+					}
+					else if (required)
+					{
+						//$this2.SetNamedStatusBarText('folder', $this.EscapeHTML('Failed to load folder.  ' + data.error));
+					}
+				},
+				onerror: function(e) {
+					// Maybe output a nice message if the request fails for some reason.
+//					if (required)  $this.SetNamedStatusBarText('folder', 'Failed to load folder.  Server error.');
+
+					console.log(e);
+				}
+			});
+
+			await xhr.Send();
+		}
 </script>
 
 
