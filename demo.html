@@ -9,10 +9,6 @@
 
 <body>
 	<style type="text/css">
-		li{
-			font-size: 120%;
-			margin:15% auto;
-		}
 		body {
 			font-family: Verdana, Arial, Helvetica, sans-serif;
 			position: relative;
@@ -94,8 +90,8 @@
 			border: 2px solid rgb(34, 85, 180);
 			border-radius: 6px;
 			width: 50%;
+			/* Could be more or less, depending on screen size */
 		}
-		
 		.btnStyle {
 			padding: .3em .8em;
 			border: 1px solid #888;
@@ -107,9 +103,7 @@
 			font-size: 125%;
 			line-height: 1.5;
 			transition: .3s;
-			width: 25vw;
 		}
-		
 		.btnStyle:hover{
 		color: var(--primary-color);
 		border-color: currentColor;
@@ -121,7 +115,7 @@
 		.close {
 			color: #aaa;
 			float: right;
-			font-size: 35px;
+			font-size: 28px;
 			font-weight: bold;
 		}
 
@@ -144,24 +138,6 @@
 			outline: none;
 			text-align: center;
 		}
-
-		.inputStyle:hover{
-			border-color: var(--primary-color);
-		}
-
-		.inputStyle:focus{
-			border-color: var(--primary-color);
-		}
-
-		.fe_fileexplorer_statusbar_text_segment_wrap{
-			height: 30px;
-			font-size:125%;
-		}
-
-		.fe_fileexplorer_statusbar_text_segment_wrap:focus{
-			background-color: var(--primary-color);
-		}
-		
 		:root{
   		--primary-color: rgb(34, 85, 180);
 		--primary-background-color:rgb(213, 232, 245);
@@ -180,7 +156,7 @@
 				<div style="display:flex; flex-direction:column; align-items: center; justify-content: center;">
 					<p style = "font-size:125%;color:#888">File Annotation </p>
 					<input class = "inputStyle" type="text" id="annotation-input" />
-					<button class = "btnStyle" id="annotation-input-submit">Save</button>
+					<button class = "btnStyle" id="annotation-input-submit">Submit</button>
 				</div>
 			</div>
 
@@ -234,10 +210,10 @@
 	})(fileTree['/'])
 
 	const allTags = {
-		Tag1: new Set(),
-		Tag2: new Set(),
-		Tag3: new Set(),
-		Tag4: new Set(),
+		tag1: new Set(),
+		tag2: new Set(),
+		tag3: new Set(),
+		tag4: new Set(),
 	};
 	const tagList = document.createElement('ul');
 
