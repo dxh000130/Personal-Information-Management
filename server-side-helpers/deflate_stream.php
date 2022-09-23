@@ -1,10 +1,7 @@
 <?php
 	// Deflate stream class.  Default is RFC1951 (raw deflate).  Supports RFC1950 (ZLIB) and RFC1952 (gzip).
 	// (C) 2020 CubicleSoft.  All Rights Reserved.
-	header("Access-Control-Allow-Origin: *"); //CORS
-	header('Access-Control-Allow-Methods:*');
-	header('Access-Control-Allow-Headers:*');
-	header("Access-Control-Request-Headers: *");
+
 	class DeflateStream
 	{
 		private $open, $fp, $filter, $compress, $indata, $outdata, $options;

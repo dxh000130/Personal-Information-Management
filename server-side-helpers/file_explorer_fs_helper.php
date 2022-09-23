@@ -1,10 +1,7 @@
 <?php
 	// File Explorer File System Helper class.
 	// (C) 2020 CubicleSoft.  All Rights Reserved.
-	header("Access-Control-Allow-Origin: *"); //CORS
-	header('Access-Control-Allow-Methods:*');
-	header('Access-Control-Allow-Headers:*');
-	header("Access-Control-Request-Headers: *");
+
 	class FileExplorerFSHelper
 	{
 		protected static $usercache = array(), $groupcache = array();
