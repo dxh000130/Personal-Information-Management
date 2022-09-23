@@ -218,7 +218,8 @@
 			},
 		}
 	};
-
+	AddFilesFromServer(this, fileTree["/"].children, ["/"])
+	console.log(fileTree)
 	let id = 0;
 	const idMap = {};
 	(function walkTree(node, name)  {
@@ -324,12 +325,11 @@ console.log(e);
 			item_checkboxes: true
 		},
 
-		onrefresh: async function(folder, required) {
+		onrefresh: function(folder, required) {
 			var newentries = [];
 			const ids = folder.GetPathIDs();
 			const firstId = ids[0];
-			await AddFilesFromServer(this, fileTree["/"].children, folder, ["/"])
-			console.log(fileTree)
+
 
 			if (firstId === 'HFO View') {
 				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
@@ -373,7 +373,7 @@ console.log(e);
 				throw new Error(`${ids.join('/')} is not a dir`);
 			}
 
-			await folder.SetEntries(Object.values(dir.children).map(item => ({
+			folder.SetEntries(Object.values(dir.children).map(item => ({
 				id: item.id,
 				name: item.name,
 				type: item.children ? 'folder': 'file',
@@ -631,9 +631,9 @@ console.log(options);
 	}, 20000);
 */
 })();
-		async function AddFilesFromServer(this1, filetree, folder, path){
+		function AddFilesFromServer(this1, filetree, path){
 			console.log("path",path)
-			var xhr = await new this1.PrepareXHR({
+			var xhr = new PrepareXHR1({
 				url: "http://www.dxh000130.top/filemanager/",
 				params: {
 					action: 'file_explorer_refresh',
@@ -656,7 +656,7 @@ console.log(options);
 									"hash":element.hash, "tooltip":element.tooltip
 								}
 								path.push(element.name)
-								AddFilesFromServer(this1, filetree[element.name].children, folder, path)
+								AddFilesFromServer(this1, filetree[element.name].children, path)
 							}else {
 								//console.log("File", element)
 								filetree[element.name] = {
@@ -664,8 +664,6 @@ console.log(options);
 								}
 							}
 						})
-
-
 					}
 					else if (required)
 					{
@@ -680,8 +678,124 @@ console.log(options);
 				}
 			});
 
-			await xhr.Send();
+			xhr.Send();
 		}
+		function PrepareXHR1(options) {
+			if (!(this instanceof PrepareXHR1)) return new PrepareXHR1(options);
+
+			var sent = false;
+			var $this = this;
+
+			$this.xhr = new XMLHttpRequest();
+
+			var RequestEndedHandler = function (e) {
+				if ($this) $this.xhr = null;
+			};
+
+			$this.xhr.addEventListener('loadend', RequestEndedHandler);
+
+			if (options.onsuccess || options.onload) $this.xhr.addEventListener('load', options.onsuccess || options.onload);
+			if (options.onerror) {
+				$this.xhr.addEventListener('error', options.onerror);
+
+				if (!options.onabort) $this.xhr.addEventListener('abort', options.onerror);
+				if (!options.ontimeout) $this.xhr.addEventListener('timeout', options.onerror);
+			}
+			if (options.onabort) $this.xhr.addEventListener('abort', options.onabort);
+			if (options.onloadstart) $this.xhr.addEventListener('loadstart', options.onloadstart);
+			if (options.onprogress) $this.xhr.addEventListener('progress', options.onprogress);
+			if (options.ontimeout) $this.xhr.addEventListener('timeout', options.ontimeout);
+			if (options.onloadend) $this.xhr.addEventListener('loadend', options.onloadend);
+
+
+			// Public functions.
+
+			// Transparently route event listener registration/removals.
+			$this.upload = {};
+			$this.upload.addEventListener = function (type, listener, options) {
+				if (!sent && $this && $this.xhr) $this.xhr.upload.addEventListener(type, listener, options);
+			};
+
+			$this.upload.removeEventListener = function (type, listener, options) {
+				if ($this && $this.xhr) $this.xhr.upload.removeEventListener(type, listener, options);
+			};
+
+			$this.addEventListener = function (type, listener, options) {
+				if (!sent && $this && $this.xhr) $this.xhr.addEventListener(type, listener, options);
+			};
+
+			$this.removeEventListener = function (type, listener, options) {
+				if ($this && $this.xhr) $this.xhr.removeEventListener(type, listener, options);
+			};
+
+			// Returns the calculated method.
+			$this.GetMethod = function () {
+				return (options.method || (options.params || options.body ? 'POST' : 'GET'));
+			};
+
+			$this.PrepareBody = function () {
+				if (options.body) return options.body;
+
+				var method = $this.GetMethod();
+
+				// Build a FormData object.
+				var xhrbody = (options.params || method === 'POST' ? new FormData() : null);
+
+				if (options.params) {
+					if (options.params instanceof FormData) {
+						xhrbody = options.params;
+					}
+					else if (Array.isArray(options.params)) {
+						for (var x = 0; x < options.params.length; x++)  xhrbody.append(options.params[x].name, options.params[x].value);
+					}
+					else {
+						for (var x in options.params) {
+							if (options.params.hasOwnProperty(x)) {
+								if (typeof options.params[x] === 'string' || typeof options.params[x] === 'number') xhrbody.append(x, options.params[x]);
+							}
+						}
+					}
+				}
+
+				return xhrbody;
+			};
+
+			$this.Send = function (xhrbody) {
+				if (sent || !$this || !$this.xhr) return;
+
+				sent = true;
+
+				$this.xhr.open($this.GetMethod(), options.url);
+
+				// Set request headers.
+				if (options.headers) {
+					for (var x in options.headers) {
+						if (options.headers.hasOwnProperty(x) && typeof options.headers[x] === 'string') $this.xhr.setRequestHeader(x, options.headers[x]);
+					}
+				}
+
+				if (!xhrbody) xhrbody = $this.PrepareBody();
+
+				// Send the XHR request.
+				$this.xhr.send(xhrbody);
+			};
+
+			$this.Abort = function () {
+				if (!$this || !$this.xhr) return;
+
+				var tempxhr = $this.xhr;
+
+				$this.xhr = null;
+
+				if (sent) tempxhr.abort();
+			};
+
+			$this.Destroy = function () {
+				$this.Abort();
+
+				$this = null;
+			};
+		};
 </script>
 
 
