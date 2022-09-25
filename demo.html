@@ -218,419 +218,427 @@
 			},
 		}
 	};
-	AddFilesFromServer(this, fileTree["/"].children, ["/"])
-	console.log(fileTree)
-	let id = 0;
-	const idMap = {};
-	(function walkTree(node, name)  {
-		const { children = {} } = node;
-		node.id = String(id++);
-		node.name = name
-		idMap[node.id] = node;
+	var XHR = 0;
+	AddFilesFromServer(this, fileTree["/"].children, ["/"]);
+	//while (XHR === 0){console.log("wait")}
+	setTimeout(Main1,1000, fileTree, elem)
 
-		for (const childName of Object.keys(children)) {
-			walkTree(children[childName], childName)
-		}
-	})(fileTree['/'])
+})();
+		function Main1(fileTree, elem){
+			console.log(fileTree)
+			console.log(elem)
+			let id = 0;
+			const idMap = {};
+			(function walkTree(node, name)  {
+				const { children = {} } = node;
+				node.id = String(id++);
+				node.name = name
+				idMap[node.id] = node;
 
-	const allTags = {
-		Tag1: new Set(),
-		Tag2: new Set(),
-		Tag3: new Set(),
-		Tag4: new Set(),
-	};
-	const tagList = document.createElement('ul');
+				for (const childName of Object.keys(children)) {
+					console.log("debug", childName)
+					walkTree(children[childName], childName)
+				}
+			})(fileTree['/'])
+
+			const allTags = {
+				Tag1: new Set(),
+				Tag2: new Set(),
+				Tag3: new Set(),
+				Tag4: new Set(),
+			};
+			const tagList = document.createElement('ul');
 
 
-	const tagTool = function(fe) {
-		const node = fe.AddToolbarButton('fe_fileexplorer_tag_tool', fe.Translate('Tag'));
-		node.addEventListener('click', () => {
-			if (node.classList.contains('fe_fileexplorer_disabled')) {
-				return;	
-			}
-
-			const selectedIds = fe.GetSelectedItemIDs();
-			const inputEl = document.createElement('input');
-
-			const popup = new window.FileExplorer.PopupMenu(node, {
-				items: [{id: 'add', name: 'Add Tag'},  'split', ...Object.keys(allTags).map(tag => ({ id: tag, name: tag, ...(allTags[tag].has(selectedIds[0]) ? { icon: 'tag-contained' } : null) }))],
-				oncancel: () => {
-					popup.Destroy()
-				},
-				onselected: (tag) => {
-					const selectedIds = fe.GetSelectedItemIDs();
-					const itemId = selectedIds[0];
-
-					if (tag === 'add') {
-						popup.Destroy();
-						setTimeout(() => {
-							const tag = window.prompt('Input New Tag');
-							allTags[tag] = new Set([itemId])
-						}, 0)
-					} else {
-						allTags[tag].has(itemId) ? allTags[tag].delete(itemId) : allTags[tag].add(itemId);
-						popup.Destroy();
+			const tagTool = function(fe) {
+				const node = fe.AddToolbarButton('fe_fileexplorer_tag_tool', fe.Translate('Tag'));
+				node.addEventListener('click', () => {
+					if (node.classList.contains('fe_fileexplorer_disabled')) {
+						return;
 					}
 
+					const selectedIds = fe.GetSelectedItemIDs();
+					const inputEl = document.createElement('input');
+
+					const popup = new window.FileExplorer.PopupMenu(node, {
+						items: [{id: 'add', name: 'Add Tag'},  'split', ...Object.keys(allTags).map(tag => ({ id: tag, name: tag, ...(allTags[tag].has(selectedIds[0]) ? { icon: 'tag-contained' } : null) }))],
+						oncancel: () => {
+							popup.Destroy()
+						},
+						onselected: (tag) => {
+							const selectedIds = fe.GetSelectedItemIDs();
+							const itemId = selectedIds[0];
+
+							if (tag === 'add') {
+								popup.Destroy();
+								setTimeout(() => {
+									const tag = window.prompt('Input New Tag');
+									allTags[tag] = new Set([itemId])
+								}, 0)
+							} else {
+								allTags[tag].has(itemId) ? allTags[tag].delete(itemId) : allTags[tag].add(itemId);
+								popup.Destroy();
+							}
+
+						},
+						onposition: (popupEl) => {
+							popupEl.style.position = 'fixed';
+							popupEl.style.left = `${node.clientWidth}px`;
+							popupEl.style.zIndex = '1000';
+						},
+					});
+
+				});
+
+				fe.addEventListener('update_tool', (currfolder, attrs) => {
+					const selectedIds = fe.GetSelectedItemIDs();
+					const enabled = !currfolder.waiting && selectedIds.length === 1 && (!('canmodify' in attrs) || attrs.canmodify) && !idMap[selectedIds[0]].children;
+
+					if (enabled) {
+						node.classList.remove('fe_fileexplorer_disabled')
+					} else {
+						node.classList.add('fe_fileexplorer_disabled');
+					}
+
+					fe.ToolStateUpdated();
+				});
+
+			};
+			window.FileExplorer.RegisterTool(2, tagTool);
+
+			var options = {
+				// This allows drag-and-drop and cut/copy/paste to work between windows of the live demo.
+				// Your application should either define the group uniquely for your application or not at all.
+				group: 'demo_test_group',
+
+				capturebrowser: true,
+
+				initpath: [
+					[ '/', '/' ],
+				],
+
+				onfocus: function(e) {
+					console.log('focus');
+					console.log(e);
 				},
-				onposition: (popupEl) => {
-					popupEl.style.position = 'fixed';
-					popupEl.style.left = `${node.clientWidth}px`;
-					popupEl.style.zIndex = '1000';
+
+				onblur: function(e) {
+					console.log('blur');
+					console.log(e);
 				},
-			});
 
-		});
+				// See main documentation for the complete list of keys.
+				// The only tool that won't show as a result of a handler being defined is 'item_checkboxes'.
+				tools: {
+					item_checkboxes: true
+				},
 
-		fe.addEventListener('update_tool', (currfolder, attrs) => {
-			const selectedIds = fe.GetSelectedItemIDs();
-			const enabled = !currfolder.waiting && selectedIds.length === 1 && (!('canmodify' in attrs) || attrs.canmodify) && !idMap[selectedIds[0]].children;
-
-			if (enabled) {
-				node.classList.remove('fe_fileexplorer_disabled')
-			} else {
-				node.classList.add('fe_fileexplorer_disabled');
-			}
-
-			fe.ToolStateUpdated();
-		});
-
-	};
-	window.FileExplorer.RegisterTool(2, tagTool);
-
-	var options = {
-		// This allows drag-and-drop and cut/copy/paste to work between windows of the live demo.
-		// Your application should either define the group uniquely for your application or not at all.
-		group: 'demo_test_group',
-
-		capturebrowser: true,
-
-		initpath: [
-			[ '/', '/' ],
-		],
-
-		onfocus: function(e) {
-console.log('focus');
-console.log(e);
-		},
-
-		onblur: function(e) {
-console.log('blur');
-console.log(e);
-		},
-
-		// See main documentation for the complete list of keys.
-		// The only tool that won't show as a result of a handler being defined is 'item_checkboxes'.
-		tools: {
-			item_checkboxes: true
-		},
-
-		onrefresh: function(folder, required) {
-			var newentries = [];
-			const ids = folder.GetPathIDs();
-			const firstId = ids[0];
+				onrefresh: function(folder, required) {
+					var newentries = [];
+					const ids = folder.GetPathIDs();
+					const firstId = ids[0];
 
 
-			if (firstId === 'HFO View') {
-				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
-				let dir = fileTree['/'];
-			}
-			if (firstId === 'Tag View') {
-				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
-				const folder = fe.GetCurrentFolder();
-				folder.SetEntries([]);
+					if (firstId === 'HFO View') {
+						document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
+						let dir = fileTree['/'];
+					}
+					if (firstId === 'Tag View') {
+						document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
+						const folder = fe.GetCurrentFolder();
+						folder.SetEntries([]);
 
-				const containerEl = fe.GetElements()['itemsscrollwrap'];
-				tagList.classList.add('tag-list');
+						const containerEl = fe.GetElements()['itemsscrollwrap'];
+						tagList.classList.add('tag-list');
 
-				for (const tag of Object.keys(allTags)) {
-					const li = document.createElement('li');
-					li.textContent = tag;
-					li.dataset.tag = tag;
-					tagList.append(li);
-				}
+						for (const tag of Object.keys(allTags)) {
+							const li = document.createElement('li');
+							li.textContent = tag;
+							li.dataset.tag = tag;
+							tagList.append(li);
+						}
 
-				containerEl.prepend(tagList);
-				return;
-			}
-			if (firstId === 'Tree Visualization') {
-				document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='none';
+						containerEl.prepend(tagList);
+						return;
+					}
+					if (firstId === 'Tree Visualization') {
+						document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='none';
 
-			}
-			tagList.remove();
-			tagList.innerHTML = '';
-			let dir = fileTree['/'];
+					}
+					tagList.remove();
+					tagList.innerHTML = '';
+					let dir = fileTree['/'];
 
-			for (const p of ids.slice(1)) {
-				dir = idMap[p];
+					for (const p of ids.slice(1)) {
+						dir = idMap[p];
 
-				if (!dir) {
-					throw new Error(`no such dir: ${ids.join('/')}`);
-				}
-			}
+						if (!dir) {
+							throw new Error(`no such dir: ${ids.join('/')}`);
+						}
+					}
 
-			if (!dir.children) {
-				throw new Error(`${ids.join('/')} is not a dir`);
-			}
+					if (!dir.children) {
+						throw new Error(`${ids.join('/')} is not a dir`);
+					}
 
-			folder.SetEntries(Object.values(dir.children).map(item => ({
-				id: item.id,
-				name: item.name,
-				type: item.children ? 'folder': 'file',
-				hash: item.hash,
-				tooltip:item.tooltip,
-			})))
-		},
+					folder.SetEntries(Object.values(dir.children).map(item => ({
+						id: item.id,
+						name: item.name,
+						type: item.children ? 'folder': 'file',
+						hash: item.hash,
+						tooltip:item.tooltip,
+					})))
+				},
 
-		onrename: function(renamed, folder, entry, newname) {
-			// Simulate network delay.
-			setTimeout(function() {
-				// The entry is a copy of the original, so it is okay to modify any aspect of it, including id.
-				// Passing in a completely new entry to the renamed() callback is also okay.
-				entry.id = newname;
-				entry.name = newname;
+				onrename: function(renamed, folder, entry, newname) {
+					// Simulate network delay.
+					setTimeout(function() {
+						// The entry is a copy of the original, so it is okay to modify any aspect of it, including id.
+						// Passing in a completely new entry to the renamed() callback is also okay.
+						entry.id = newname;
+						entry.name = newname;
 
-				renamed(entry);
-			}, 250);
-		},
+						renamed(entry);
+					}, 250);
+				},
 
-		onopenfile: function(folder, entry) {
-console.log(entry);
-		},
+				onopenfile: function(folder, entry) {
+					console.log(entry);
+				},
 
-		onnewfolder: function(created, folder) {
-			// Simulate network delay.
-			setTimeout(function() {
-				var entry = { name: 'New Folder', type: 'folder', id: 'asdfasdffolder123', hash: 'asdfasdffolder123' };
+				onnewfolder: function(created, folder) {
+					// Simulate network delay.
+					setTimeout(function() {
+						var entry = { name: 'New Folder', type: 'folder', id: 'asdfasdffolder123', hash: 'asdfasdffolder123' };
 
-				created(entry);
-			}, 250);
-		},
+						created(entry);
+					}, 250);
+				},
 
-		onnewfile: function(created, folder) {
-			// Simulate network delay.
-			setTimeout(function() {
-				var entry = { name: 'New File.txt', type: 'file', id: 'asdfasdffile123', hash: 'asdfasdffile123' };
+				onnewfile: function(created, folder) {
+					// Simulate network delay.
+					setTimeout(function() {
+						var entry = { name: 'New File.txt', type: 'file', id: 'asdfasdffile123', hash: 'asdfasdffile123' };
 
-				created(entry);
-			}, 250);
-		},
+						created(entry);
+					}, 250);
+				},
 
-		oninitupload: function(startupload, fileinfo) {
-console.log(fileinfo.file);
-console.log(JSON.stringify(fileinfo.folder.GetPathIDs()));
+				oninitupload: function(startupload, fileinfo) {
+					console.log(fileinfo.file);
+					console.log(JSON.stringify(fileinfo.folder.GetPathIDs()));
 
-			if (fileinfo.type === 'dir')
-			{
-				// Create a directory.  This type only shows up if the directory is empty.
+					if (fileinfo.type === 'dir')
+					{
+						// Create a directory.  This type only shows up if the directory is empty.
 
-				// Simulate network delay.
-				setTimeout(function() {
+						// Simulate network delay.
+						setTimeout(function() {
 
-					// Passing false as the second parameter to startupload will remove the item from the queue.
-					startupload(false);
-				}, 250);
-			}
-			else
-			{
-				// Simulate network delay.
-				setTimeout(function() {
-					// Set a URL, headers, and params to send with the file data to the server.
-					fileinfo.url = 'filemanager/';
+							// Passing false as the second parameter to startupload will remove the item from the queue.
+							startupload(false);
+						}, 250);
+					}
+					else
+					{
+						// Simulate network delay.
+						setTimeout(function() {
+							// Set a URL, headers, and params to send with the file data to the server.
+							fileinfo.url = 'filemanager/';
 
-					fileinfo.headers = {
-					};
+							fileinfo.headers = {
+							};
 
-					fileinfo.params = {
-						action: 'upload',
-						id: 'temp-12345',
-						path: JSON.stringify(fileinfo.folder.GetPathIDs()),
-						name: fileinfo.fullPath,
-						size: fileinfo.file.size,
-						xsrftoken: 'asdfasdf'
-					};
+							fileinfo.params = {
+								action: 'upload',
+								id: 'temp-12345',
+								path: JSON.stringify(fileinfo.folder.GetPathIDs()),
+								name: fileinfo.fullPath,
+								size: fileinfo.file.size,
+								xsrftoken: 'asdfasdf'
+							};
 
-					fileinfo.fileparam = 'file';
+							fileinfo.fileparam = 'file';
 
-					// Optional:  Send chunked uploads.  Requires the server to know how to put chunks back together.
-					fileinfo.chunksize = 1000000;
+							// Optional:  Send chunked uploads.  Requires the server to know how to put chunks back together.
+							fileinfo.chunksize = 1000000;
 
-					// Optional:  Automatic retry count for the file on failure.
-					fileinfo.retries = 3;
+							// Optional:  Automatic retry count for the file on failure.
+							fileinfo.retries = 3;
 
-					// Start the upload.
-					startupload(true);
-				}, 250);
-			}
-		},
+							// Start the upload.
+							startupload(true);
+						}, 250);
+					}
+				},
 
-		// Optional upload handler function to finalize an uploaded file on a server (e.g. move from a temporary directory to the final location).
-		onfinishedupload: function(finalize, fileinfo) {
-console.log(fileinfo);
-			// Simulate network delay.
-			setTimeout(function() {
-				finalize(true);
-			}, 250);
-		},
+				// Optional upload handler function to finalize an uploaded file on a server (e.g. move from a temporary directory to the final location).
+				onfinishedupload: function(finalize, fileinfo) {
+					console.log(fileinfo);
+					// Simulate network delay.
+					setTimeout(function() {
+						finalize(true);
+					}, 250);
+				},
 
-		// Optional upload handler function to receive permanent error notifications.
-		onuploaderror: function(fileinfo, e) {
-console.log(e);
-console.log(fileinfo);
-		},
+				// Optional upload handler function to receive permanent error notifications.
+				onuploaderror: function(fileinfo, e) {
+					console.log(e);
+					console.log(fileinfo);
+				},
 
-		oninitdownload: function(startdownload, folder, ids, entries) {
-			// Simulate network delay.
-			setTimeout(function() {
-				// Set a URL and params to send with the request to the server.
-				var options = {};
+				oninitdownload: function(startdownload, folder, ids, entries) {
+					// Simulate network delay.
+					setTimeout(function() {
+						// Set a URL and params to send with the request to the server.
+						var options = {};
 
-				// Optional:  HTTP method to use.
+						// Optional:  HTTP method to use.
 //				options.method = 'POST';
 
-				options.url = 'filemanager/';
+						options.url = 'http://www.dxh000130.top/filemanager/';
 
-				options.params = {
-					action: 'download',
-					path: JSON.stringify(folder.GetPathIDs()),
-					ids: JSON.stringify(ids),
-					xsrftoken: 'asdfasdf'
-				};
+						options.params = {
+							action: 'download',
+							path: JSON.stringify(folder.GetPathIDs()),
+							ids: JSON.stringify(ids),
+							xsrftoken: 'asdfasdf'
+						};
 
-				// Optional:  Control the download via an in-page iframe (default) vs. form only (new tab).
+						// Optional:  Control the download via an in-page iframe (default) vs. form only (new tab).
 //				options.iframe = false;
 
-				startdownload(options);
-			}, 250);
-		},
+						startdownload(options);
+					}, 250);
+				},
 
-		ondownloadstarted: function(options) {
-console.log('started');
-console.log(options);
-		},
+				ondownloadstarted: function(options) {
+					console.log('started');
+					console.log(options);
+				},
 
-		ondownloaderror: function(options) {
-console.log('error');
-console.log(options);
-		},
+				ondownloaderror: function(options) {
+					console.log('error');
+					console.log(options);
+				},
 
-		// Calculated information must be fully synchronous (i.e. no AJAX calls).  Chromium only.
-		ondownloadurl: function(result, folder, ids, entry) {
-			result.name = (ids.length === 1 ? (entry.type === 'file' ? entry.name : entry.name + '.zip') : 'download-' + Date.now() + '.zip');
-			result.url = 'http://127.0.0.1/filemanager/?action=download&xsrfdata=asdfasdfasdf&xsrftoken=asdfasdf&path=' + encodeURIComponent(JSON.stringify(folder.GetPathIDs())) + '&ids=' + encodeURIComponent(JSON.stringify(ids));
-		},
+				// Calculated information must be fully synchronous (i.e. no AJAX calls).  Chromium only.
+				ondownloadurl: function(result, folder, ids, entry) {
+					result.name = (ids.length === 1 ? (entry.type === 'file' ? entry.name : entry.name + '.zip') : 'download-' + Date.now() + '.zip');
+					result.url = 'http://www.dxh000130.top/filemanager/?action=download&xsrfdata=asdfasdfasdf&xsrftoken=asdfasdf&path=' + encodeURIComponent(JSON.stringify(folder.GetPathIDs())) + '&ids=' + encodeURIComponent(JSON.stringify(ids));
+				},
 
-		oncopy: function(copied, srcpath, srcids, destfolder) {
-			// Simulate network delay.
-			setTimeout(function() {
-				// Fill an array with copied destination folder entries from the server.
-				var entries = [];
+				oncopy: function(copied, srcpath, srcids, destfolder) {
+					// Simulate network delay.
+					setTimeout(function() {
+						// Fill an array with copied destination folder entries from the server.
+						var entries = [];
 
-				copied(true, entries);
-			}, 250);
-		},
+						copied(true, entries);
+					}, 250);
+				},
 
-		onmove: function(moved, srcpath, srcids, destfolder) {
-			// Simulate network delay.
-			setTimeout(function() {
-				// Fill an array with moved destination folder entries from the server.
-				var entries = [];
+				onmove: function(moved, srcpath, srcids, destfolder) {
+					// Simulate network delay.
+					setTimeout(function() {
+						// Fill an array with moved destination folder entries from the server.
+						var entries = [];
 
-				moved(true, entries);
-			}, 250);
-		},
+						moved(true, entries);
+					}, 250);
+				},
 
-		ondelete: function(deleted, folder, ids, entries, recycle) {
-			// Ask the user if they really want to delete/recycle the items.
-			const confirmation = confirm('Are you sure you want to permanently delete ' + (entries.length == 1 ? '"' + entries[0].name + '"' : entries.length + ' items') +  '?')
-			if (!recycle && !confirmation)  deleted('Cancelled deletion');
-			else
-			{
-				// Simulate network delay.
-				setTimeout(function() {
-					deleted(true);
-				}, 250);
-			}
-		},
-	};
+				ondelete: function(deleted, folder, ids, entries, recycle) {
+					// Ask the user if they really want to delete/recycle the items.
+					const confirmation = confirm('Are you sure you want to permanently delete ' + (entries.length == 1 ? '"' + entries[0].name + '"' : entries.length + ' items') +  '?')
+					if (!recycle && !confirmation)  deleted('Cancelled deletion');
+					else
+					{
+						// Simulate network delay.
+						setTimeout(function() {
+							deleted(true);
+						}, 250);
+					}
+				},
+			};
 
-	var fe = new window.FileExplorer(elem, options);
+			var fe = new window.FileExplorer(elem, options);
 
-	tagList.addEventListener('click', (e) => {
-		const tag = e.target.dataset.tag;
-		const folder = fe.GetCurrentFolder();
+			tagList.addEventListener('click', (e) => {
+				const tag = e.target.dataset.tag;
+				const folder = fe.GetCurrentFolder();
 
-		folder.SetEntries(Array.from(allTags[tag]).map(itemId => ({
-			id: itemId,
-			name: idMap[itemId].name,
-			type: idMap[itemId].children ? 'folder' : 'file',
-		})));
-	});
+				folder.SetEntries(Array.from(allTags[tag]).map(itemId => ({
+					id: itemId,
+					name: idMap[itemId].name,
+					type: idMap[itemId].children ? 'folder' : 'file',
+				})));
+			});
 
 
-	let previousDir;
-	fe.SetNamedStatusBarText('toggleHFOView', 'HFO View', null, () => {
-		const currentDir = fe.GetCurrentFolder().GetPath();
+			let previousDir;
+			fe.SetNamedStatusBarText('toggleHFOView', 'HFO View', null, () => {
+				const currentDir = fe.GetCurrentFolder().GetPath();
 
-		if (currentDir[0][0] === 'HFO View') {
-			fe.SetPath(previousDir)
-		} else {
-			previousDir = fe.GetCurrentFolder().GetPath();
-			fe.SetPath([['HFO View', 'HFO View', { canmodify: true }]])
-		}
+				if (currentDir[0][0] === 'HFO View') {
+					fe.SetPath(previousDir)
+				} else {
+					previousDir = fe.GetCurrentFolder().GetPath();
+					fe.SetPath([['HFO View', 'HFO View', { canmodify: true }]])
+				}
 
-	});
-	fe.SetNamedStatusBarText('toggleTagView', 'Tag View', null, () => {
-		const currentDir = fe.GetCurrentFolder().GetPath();
+			});
+			fe.SetNamedStatusBarText('toggleTagView', 'Tag View', null, () => {
+				const currentDir = fe.GetCurrentFolder().GetPath();
 
-		if (currentDir[0][0] === 'Tag View') {
-			fe.SetPath(previousDir)
-		} else {
-			previousDir = fe.GetCurrentFolder().GetPath();
-			fe.SetPath([['Tag View', 'Tag View', { canmodify: true }]])
-		}
+				if (currentDir[0][0] === 'Tag View') {
+					fe.SetPath(previousDir)
+				} else {
+					previousDir = fe.GetCurrentFolder().GetPath();
+					fe.SetPath([['Tag View', 'Tag View', { canmodify: true }]])
+				}
 
-	});
-	fe.SetNamedStatusBarText('toggleTreeView', 'Tree Visualization', null, () => {
-		const currentDir = fe.GetCurrentFolder().GetPath();
+			});
+			fe.SetNamedStatusBarText('toggleTreeView', 'Tree Visualization', null, () => {
+				const currentDir = fe.GetCurrentFolder().GetPath();
 
-		if (currentDir[0][0] === 'Tree Visualization') {
-			fe.SetPath(previousDir)
-		} else {
-			previousDir = fe.GetCurrentFolder().GetPath();
-			fe.SetPath([['Tree Visualization', 'Tree Visualization', { canmodify: false }]])
-		}
+				if (currentDir[0][0] === 'Tree Visualization') {
+					fe.SetPath(previousDir)
+				} else {
+					previousDir = fe.GetCurrentFolder().GetPath();
+					fe.SetPath([['Tree Visualization', 'Tree Visualization', { canmodify: false }]])
+				}
 
-	});
+			});
 
 //fe.Focus();
 
-	// Verify that there aren't any leaked globals.
-	setTimeout(function() {
-		// Create an iframe and put it in the <body>.
-		var iframe = document.createElement('iframe');
-		document.body.appendChild(iframe);
+			// Verify that there aren't any leaked globals.
+			setTimeout(function() {
+				// Create an iframe and put it in the <body>.
+				var iframe = document.createElement('iframe');
+				document.body.appendChild(iframe);
 
-		// We'll use this to get a "pristine" window object.
-		var pristineWindow = iframe.contentWindow.window;
+				// We'll use this to get a "pristine" window object.
+				var pristineWindow = iframe.contentWindow.window;
 
-		// Go through every property on `window` and filter it out if
-		// the iframe's `window` also has it.
-		console.log(Object.keys(window).filter(function(key) {
-			return !pristineWindow.hasOwnProperty(key)
-		}));
+				// Go through every property on `window` and filter it out if
+				// the iframe's `window` also has it.
+				console.log(Object.keys(window).filter(function(key) {
+					return !pristineWindow.hasOwnProperty(key)
+				}));
 
-		// Remove the iframe.
-		document.body.removeChild(iframe)
-	}, 15000);
+				// Remove the iframe.
+				document.body.removeChild(iframe)
+			}, 15000);
 
-/*
-	// Test destroy.
-	setTimeout(function() {
-		fe.Destroy();
-	}, 20000);
-*/
-})();
+			/*
+                // Test destroy.
+                setTimeout(function() {
+                    fe.Destroy();
+                }, 20000);
+            */
+		}
 		function AddFilesFromServer(this1, filetree, path){
 			console.log("path",path)
 			var xhr = new PrepareXHR1({
@@ -665,9 +673,10 @@ console.log(options);
 							}
 						})
 					}
-					else if (required)
+					else
 					{
 						//$this2.SetNamedStatusBarText('folder', $this.EscapeHTML('Failed to load folder.  ' + data.error));
+						console.log("XHR ERROR", data)
 					}
 				},
 				onerror: function(e) {
