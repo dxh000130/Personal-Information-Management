@@ -224,19 +224,60 @@
 	setTimeout(Main1,1000, fileTree, elem)
 
 })();
+
 		function Main1(fileTree, elem){
-			console.log(fileTree)
-			console.log(elem)
+			var triggers = {}
+			var $this = this;
+			var defaults = {
+				messagetimeout: 2000,
+
+				fileexplorer: null,
+				fe_group: null,
+				fe_capturebrowser: true,
+				fe_initpath: [
+					[ '', '/' ]
+				],
+				fe_displayunits: 'iec_windows',
+				fe_adjustprecision: true,
+				fe_refreshall: true,
+				fe_requestvar: 'action',
+				fe_requestprefix: 'file_explorer_',
+				fe_uploadchunksize: 0,
+				fe_concurrentuploads: 4,
+
+				fe_tools: {},
+
+				fe_downloadiframe: true,
+
+				ace_modes: [],
+				ace_themes: [],
+
+				recycling: true,
+				tabbed: true,
+
+				onxhrparams: null,
+
+				langmap: {}
+			};
+			$this.settings = Object.assign({}, defaults, options);
+			var DispatchEvent = function(eventname, params) {
+				if (!triggers[eventname])  return;
+
+				triggers[eventname].forEach(function(callback) {
+					if (Array.isArray(params))  callback.apply($this, params);
+					else  callback.call($this, params);
+				});
+			};
 			let id = 0;
 			const idMap = {};
 			(function walkTree(node, name)  {
 				const { children = {} } = node;
-				node.id = String(id++);
-				node.name = name
+				//node.id = String(id++);
+				//node.name = name
 				idMap[node.id] = node;
 
 				for (const childName of Object.keys(children)) {
-					console.log("debug", childName)
+					//console.log("debug", childName)
 					walkTree(children[childName], childName)
 				}
 			})(fileTree['/'])
@@ -387,6 +428,7 @@
 						type: item.children ? 'folder': 'file',
 						hash: item.hash,
 						tooltip:item.tooltip,
+						size:item.size,
 					})))
 				},
 
@@ -499,11 +541,16 @@
 						options.url = 'http://www.dxh000130.top/filemanager/';
 
 						options.params = {
-							action: 'download',
 							path: JSON.stringify(folder.GetPathIDs()),
-							ids: JSON.stringify(ids),
-							xsrftoken: 'asdfasdf'
+							ids: JSON.stringify(ids)
 						};
+
+						options.params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'download';
+
+						DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'download', options.params]);
+
+						// Control the download via an in-page iframe (default) vs. form only (new tab).
+						options.iframe = $this.settings.fe_downloadiframe;
 
 						// Optional:  Control the download via an in-page iframe (default) vs. form only (new tab).
 //				options.iframe = false;
@@ -526,6 +573,7 @@
 				ondownloadurl: function(result, folder, ids, entry) {
 					result.name = (ids.length === 1 ? (entry.type === 'file' ? entry.name : entry.name + '.zip') : 'download-' + Date.now() + '.zip');
 					result.url = 'http://www.dxh000130.top/filemanager/?action=download&xsrfdata=asdfasdfasdf&xsrftoken=asdfasdf&path=' + encodeURIComponent(JSON.stringify(folder.GetPathIDs())) + '&ids=' + encodeURIComponent(JSON.stringify(ids));
+					console.log(result.url)
 				},
 
 				oncopy: function(copied, srcpath, srcids, destfolder) {
@@ -572,6 +620,9 @@
 					id: itemId,
 					name: idMap[itemId].name,
 					type: idMap[itemId].children ? 'folder' : 'file',
+					hash: idMap[itemId].hash,
+					tooltip:idMap[itemId].tooltip,
+					size:idMap[itemId].size,
 				})));
 			});
 
@@ -651,7 +702,7 @@
 				onsuccess: function(e) {
 					//console.log(e)
 					var data = JSON.parse(e.target.responseText);
-					//console.log("DatafromServer", data.entries);
+					console.log("DatafromServer", data.entries);
 
 					if (data.success)
 					{
@@ -661,14 +712,14 @@
 								//console.log("Folder", element)
 								filetree[element.name] = {
 									children:{},
-									"hash":element.hash, "tooltip":element.tooltip
+									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
 								path.push(element.name)
 								AddFilesFromServer(this1, filetree[element.name].children, path)
 							}else {
 								//console.log("File", element)
 								filetree[element.name] = {
-									"hash":element.hash, "tooltip":element.tooltip
+									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
 							}
 						})
