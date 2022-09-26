@@ -218,9 +218,11 @@
 			},
 		}
 	};
-	var XHR = 0;
-	AddFilesFromServer(this, fileTree["/"].children, ["/"]);
-	//while (XHR === 0){console.log("wait")}
+	var XHRstart = [];
+	var XHRfinish = [];
+	AddFilesFromServer(this, fileTree["/"].children, ["/"], XHRstart, XHRfinish);
+	console.log(XHRstart.length)
+	//while (XHRstart.length != XHRfinish.length){console.log("wait")}
 	setTimeout(Main1,1000, fileTree, elem)
 
 })();
@@ -690,7 +692,8 @@
                 }, 20000);
             */
 		}
-		function AddFilesFromServer(this1, filetree, path){
+		function AddFilesFromServer(this1, filetree, path, XHRstart, XHRfinish){
+			XHRstart.push("0")
 			console.log("path",path)
 			var xhr = new PrepareXHR1({
 				url: "http://www.dxh000130.top/filemanager/",
@@ -709,13 +712,14 @@
 						//if ($this2.IsMappedFolder(folder))  folder.SetEntries(data.entries);
 						data.entries.forEach(function(element) {
 							if (element.type === "folder"){
+								var path1 = path.concat([]);
 								//console.log("Folder", element)
 								filetree[element.name] = {
 									children:{},
 									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
-								path.push(element.name)
-								AddFilesFromServer(this1, filetree[element.name].children, path)
+								path1.push(element.name)
+								AddFilesFromServer(this1, filetree[element.name].children, path1, XHRstart, XHRfinish)
 							}else {
 								//console.log("File", element)
 								filetree[element.name] = {
@@ -723,6 +727,7 @@
 								}
 							}
 						})
+						XHRfinish.push("1")
 					}
 					else
 					{
