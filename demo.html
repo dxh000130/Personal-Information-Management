@@ -593,7 +593,7 @@
 						initparams[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'upload_init';
 
 						DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'upload_init', initparams]);
-
+						console.log(initparams)
 						// Prepare the file upload on the server.
 						var xhr = new this.PrepareXHR({
 							url: 'http://www.dxh000130.top/filemanager/',

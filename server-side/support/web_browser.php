@@ -65,6 +65,10 @@
 
 						// Set up some standard headers.
 						$headers = array();
+						$headers["Access-Control-Allow-Origin"] = "*";
+						$headers["Access-Control-Allow-Methods"] = "*";
+						$headers["Access-Control-Allow-Headers"] = "*";
+						$headers["Access-Control-Request-Headers"] = "*";
 						$profile = strtolower($state["profile"]);
 						$tempprofile = explode("-", $profile);
 						if (count($tempprofile) == 2)

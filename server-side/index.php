@@ -1,7 +1,10 @@
 <?php
 	// File Manager.
 	// (C) 2020 CubicleSoft.  All Rights Reserved.
-
+header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 	require_once "support/str_basics.php";
 	require_once "support/page_basics.php";
 

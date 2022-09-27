@@ -572,6 +572,10 @@ EOF;
 		if (!isset($contentopts["title"]))  $contentopts["title"] = $title;
 
 		header("Content-Type: text/html; charset=UTF-8");
+		header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 
 		BB_InitLayouts();
 

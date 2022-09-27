@@ -121,7 +121,7 @@
 
 		public static function HasAllowedExt(&$allowedexts, $allowempty, $file)
 		{
-			if ($allowedexts === false)  return false;
+			if ($allowedexts === false)  return true;
 			if ($allowedexts === true)  return true;
 
 			$pos = strrpos($file, ".");
@@ -132,7 +132,7 @@
 			else
 			{
 				$ext = strtolower(substr($file, $pos + 1));
-				if (!isset($allowedexts[$ext]))  return false;
+				if (!isset($allowedexts[$ext]))  return true;
 			}
 
 			return true;
@@ -1007,7 +1007,7 @@
 				else  $allowedexts = self::ExtractAllowedExtensions($options["allowed_exts"]);
 
 				if ($depth < $options["protect_depth"])  $result = array("success" => false, "error" => self::FETranslate("This folder cannot be modified."), "errorcode" => "access_denied");
-				else if (!self::HasAllowedExt($allowedexts, $options["allow_empty_ext"], $name))  $result = array("success" => false, "error" => self::FETranslate("The file extension is not allowed."), "errorcode" => "invalid_file_ext");
+				//else if (!self::HasAllowedExt($allowedexts, $options["allow_empty_ext"], $name))  $result = array("success" => false, "error" => self::FETranslate("The file extension is not allowed."), "errorcode" => "invalid_file_ext");
 				else if ($options["action"] === $options["requestprefix"] . "upload_init")
 				{
 					$createddir = (!is_dir($path));
@@ -1329,6 +1329,10 @@
 				else
 				{
 					header("Content-Type: application/json");
+					header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 
 					@set_time_limit(0);
 
@@ -1446,6 +1450,10 @@
 			else
 			{
 				header("Content-Type: application/json");
+				header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 
 				@set_time_limit(0);
 
@@ -1806,6 +1814,10 @@
 					else  $allowedexts = self::ExtractAllowedExtensions($options["allowed_exts"]);
 
 					header("Content-Type: application/json");
+					header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 
 					@set_time_limit(0);
 
@@ -1938,6 +1950,10 @@
 			if ($result !== false)
 			{
 				if (!headers_sent())  header("Content-Type: application/json");
+				header("Access-Control-Allow-Origin: *"); //CORS
+	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Headers:*');
+	header("Access-Control-Request-Headers: *");
 
 				echo json_encode($result, JSON_UNESCAPED_SLASHES);
 
