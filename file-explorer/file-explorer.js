@@ -7394,8 +7394,11 @@
 	};
 
 	window.FileExplorer.RegisterTool(1, FileExplorerTool_Delete);
+	var FileAnnotatesStore = {};
+
 
 	var FileExplorerTool_AddAnnotates = function (fe) {
+
 		if (!(this instanceof FileExplorerTool_AddAnnotates)) return new FileExplorerTool_AddAnnotates(fe);
 		var enabled = false;
 		var node = fe.AddToolbarButton('fe_fileexplorer_folder_tool_addannotates', fe.Translate('Add Anotatition'));
@@ -7417,10 +7420,29 @@
 		var ClickHandler = function (e) {
 			modal = document.getElementById("annotation-input-modal");
 			modal.style.display = "block";
+			var FilePath = ""
+			fe.GetCurrentFolder().GetPath().forEach(function (Path) {
+				FilePath = FilePath.concat(Path[0], ";")
+			})
+			FilePath = FilePath.concat(fe.GetFocusedItemID())
+			console.log(FilePath)
+			if (FilePath in FileAnnotatesStore){
+				document.getElementById("annotation-input").value = FileAnnotatesStore[FilePath];
+			}else {
+				document.getElementById("annotation-input").value = "";
+			}
+			var StoreAnnotatesButton = document.getElementsByClassName("btnStyle")[0];
+			StoreAnnotatesButton.onclick = function () {
+				FileAnnotatesStore[FilePath] = document.getElementById("annotation-input").value;
+				document.getElementById("annotation-input-modal").style.display = 'none'
+			}
+
 		};
 		node.addEventListener('click', ClickHandler);
+
 	};
 	window.FileExplorer.RegisterTool(1, FileExplorerTool_AddAnnotates);
+
 	// var span = document.getElementsByClassName("close");
 	// span.onclick = function () {
 	// 	console.log("close");
