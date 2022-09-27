@@ -218,12 +218,9 @@
 			},
 		}
 	};
-	var XHRstart = [];
-	var XHRfinish = [];
-	AddFilesFromServer(this, fileTree["/"].children, ["/"], XHRstart, XHRfinish);
-	console.log(XHRstart.length)
-	//while (XHRstart.length != XHRfinish.length){console.log("wait")}
-	setTimeout(Main1,1000, fileTree, elem)
+	// AddFilesFromServer(this, fileTree["/"].children, ["/"]);
+	// setTimeout(Main1,500, fileTree, elem);
+	Main1(fileTree, elem)
 
 })();
 
@@ -377,73 +374,114 @@
 				},
 
 				onrefresh: function(folder, required) {
-					var newentries = [];
-					const ids = folder.GetPathIDs();
-					const firstId = ids[0];
+					const fileTree = {
+						'/': {
+							children: {
+							},
+						}
+					};
+					AddFilesFromServer(this, fileTree["/"].children, ["/"]);
+					setTimeout(function (folder, required) {
+						console.log(fileTree);
+						(function walkTree(node, name)  {
+							const { children = {} } = node;
+							//node.id = String(id++);
+							//node.name = name
+							idMap[node.id] = node;
+
+							for (const childName of Object.keys(children)) {
+								//console.log("debug", childName)
+								walkTree(children[childName], childName)
+							}
+						})(fileTree['/'])
+						console.log("Onfresh被调用")
+						var newentries = [];
+						const ids = folder.GetPathIDs();
+						const firstId = ids[0];
 
 
-					if (firstId === 'HFO View') {
-						document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
+						if (firstId === 'HFO View') {
+							document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
+							let dir = fileTree['/'];
+						}
+						if (firstId === 'Tag View') {
+							document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
+							const folder = fe.GetCurrentFolder();
+							folder.SetEntries([]);
+
+							const containerEl = fe.GetElements()['itemsscrollwrap'];
+							tagList.classList.add('tag-list');
+
+							for (const tag of Object.keys(allTags)) {
+								const li = document.createElement('li');
+								li.textContent = tag;
+								li.dataset.tag = tag;
+								tagList.append(li);
+							}
+
+							containerEl.prepend(tagList);
+							return;
+						}
+						if (firstId === 'Tree Visualization') {
+							document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='none';
+
+						}
+						tagList.remove();
+						tagList.innerHTML = '';
 						let dir = fileTree['/'];
-					}
-					if (firstId === 'Tag View') {
-						document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='';
-						const folder = fe.GetCurrentFolder();
-						folder.SetEntries([]);
 
-						const containerEl = fe.GetElements()['itemsscrollwrap'];
-						tagList.classList.add('tag-list');
+						for (const p of ids.slice(1)) {
+							dir = idMap[p];
 
-						for (const tag of Object.keys(allTags)) {
-							const li = document.createElement('li');
-							li.textContent = tag;
-							li.dataset.tag = tag;
-							tagList.append(li);
+							if (!dir) {
+								throw new Error(`no such dir: ${ids.join('/')}`);
+							}
 						}
 
-						containerEl.prepend(tagList);
-						return;
-					}
-					if (firstId === 'Tree Visualization') {
-						document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display='none';
-
-					}
-					tagList.remove();
-					tagList.innerHTML = '';
-					let dir = fileTree['/'];
-
-					for (const p of ids.slice(1)) {
-						dir = idMap[p];
-
-						if (!dir) {
-							throw new Error(`no such dir: ${ids.join('/')}`);
+						if (!dir.children) {
+							throw new Error(`${ids.join('/')} is not a dir`);
 						}
-					}
 
-					if (!dir.children) {
-						throw new Error(`${ids.join('/')} is not a dir`);
-					}
+						folder.SetEntries(Object.values(dir.children).map(item => ({
+							id: item.id,
+							name: item.name,
+							type: item.children ? 'folder': 'file',
+							hash: item.hash,
+							tooltip:item.tooltip,
+							size:item.size,
+						})))
+					}, 1000, folder, required)
 
-					folder.SetEntries(Object.values(dir.children).map(item => ({
-						id: item.id,
-						name: item.name,
-						type: item.children ? 'folder': 'file',
-						hash: item.hash,
-						tooltip:item.tooltip,
-						size:item.size,
-					})))
 				},
-
 				onrename: function(renamed, folder, entry, newname) {
 					// Simulate network delay.
-					setTimeout(function() {
-						// The entry is a copy of the original, so it is okay to modify any aspect of it, including id.
-						// Passing in a completely new entry to the renamed() callback is also okay.
-						entry.id = newname;
-						entry.name = newname;
+					var params = {
+						path: JSON.stringify(folder.GetPathIDs()),
+						id: entry.id,
+						newname: newname
+					};
 
-						renamed(entry);
-					}, 250);
+					params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'rename';
+
+					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'rename', params]);
+
+					var xhr = new this.PrepareXHR({
+						url: 'http://www.dxh000130.top/filemanager/',
+						params: params,
+						onsuccess: function(e) {
+							var data = JSON.parse(e.target.responseText);
+//console.log(data);
+
+							if (data.success)  renamed(data.entry);
+							else  renamed(data.error);
+						},
+						onerror: function(e) {
+							console.log(e);
+							renamed('Server/network error.');
+						}
+					});
+
+					xhr.Send();
 				},
 
 				onopenfile: function(folder, entry) {
@@ -452,77 +490,169 @@
 
 				onnewfolder: function(created, folder) {
 					// Simulate network delay.
-					setTimeout(function() {
-						var entry = { name: 'New Folder', type: 'folder', id: 'asdfasdffolder123', hash: 'asdfasdffolder123' };
+					var params = {
+						path: JSON.stringify(folder.GetPathIDs())
+					};
 
-						created(entry);
-					}, 250);
+					params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'new_folder';
+
+					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'new_folder', params]);
+
+					var xhr = new this.PrepareXHR({
+						url: 'http://www.dxh000130.top/filemanager/',
+						params: params,
+						onsuccess: function(e) {
+							var data = JSON.parse(e.target.responseText);
+//console.log(data);
+
+							if (data.success)  created(data.entry);
+							else  created(data.error);
+						},
+						onerror: function(e) {
+							console.log(e);
+							created('Server/network error.');
+						}
+					});
+
+					xhr.Send();
 				},
 
 				onnewfile: function(created, folder) {
 					// Simulate network delay.
-					setTimeout(function() {
-						var entry = { name: 'New File.txt', type: 'file', id: 'asdfasdffile123', hash: 'asdfasdffile123' };
+					var params = {
+						path: JSON.stringify(folder.GetPathIDs())
+					};
 
-						created(entry);
-					}, 250);
+					params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'new_file';
+
+					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'new_file', params]);
+
+					var xhr = new this.PrepareXHR({
+						url: 'http://www.dxh000130.top/filemanager/',
+						params: params,
+						onsuccess: function(e) {
+							var data = JSON.parse(e.target.responseText);
+//console.log(data);
+
+							if (data.success)  created(data.entry);
+							else  created(data.error);
+						},
+						onerror: function(e) {
+							console.log(e);
+							created('Server/network error.');
+						}
+					});
+
+					xhr.Send();
 				},
 
-				oninitupload: function(startupload, fileinfo) {
+				oninitupload: function(startupload, fileinfo, queuestarted) {
 					console.log(fileinfo.file);
 					console.log(JSON.stringify(fileinfo.folder.GetPathIDs()));
+
+					var $this2 = this;
 
 					if (fileinfo.type === 'dir')
 					{
 						// Create a directory.  This type only shows up if the directory is empty.
+						// Set a URL, headers, and params to send to the server.
+						fileinfo.url = 'http://www.dxh000130.top/filemanager/';
 
-						// Simulate network delay.
-						setTimeout(function() {
+						fileinfo.headers = {
+						};
 
-							// Passing false as the second parameter to startupload will remove the item from the queue.
-							startupload(false);
-						}, 250);
+						fileinfo.params = {
+							path: JSON.stringify(fileinfo.folder.GetPathIDs()),
+							name: fileinfo.fullPath
+						};
+
+						fileinfo.params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'new_folder';
+
+						DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'new_folder', fileinfo.params]);
+
+						fileinfo.currpathparam = 'currpath';
+
+						// Automatic retry count for the directory on failure.
+						fileinfo.retries = 3;
+
+						// Create the directory.
+						startupload(true);
 					}
 					else
 					{
-						// Simulate network delay.
-						setTimeout(function() {
-							// Set a URL, headers, and params to send with the file data to the server.
-							fileinfo.url = 'filemanager/';
+						var origcurrfolder = $this2.GetCurrentFolder();
 
-							fileinfo.headers = {
-							};
+						var initparams = {
+							path: JSON.stringify(fileinfo.folder.GetPathIDs()),
+							name: fileinfo.fullPath,
+							size: fileinfo.file.size,
+							currpath: JSON.stringify(origcurrfolder.GetPathIDs()),
+							queuestarted: queuestarted
+						};
 
-							fileinfo.params = {
-								action: 'upload',
-								id: 'temp-12345',
-								path: JSON.stringify(fileinfo.folder.GetPathIDs()),
-								name: fileinfo.fullPath,
-								size: fileinfo.file.size,
-								xsrftoken: 'asdfasdf'
-							};
+						initparams[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'upload_init';
 
-							fileinfo.fileparam = 'file';
+						DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'upload_init', initparams]);
 
-							// Optional:  Send chunked uploads.  Requires the server to know how to put chunks back together.
-							fileinfo.chunksize = 1000000;
+						// Prepare the file upload on the server.
+						var xhr = new this.PrepareXHR({
+							url: 'http://www.dxh000130.top/filemanager/',
+							params: initparams,
+							onsuccess: function(e) {
+								var data = JSON.parse(e.target.responseText);
+//console.log(data);
 
-							// Optional:  Automatic retry count for the file on failure.
-							fileinfo.retries = 3;
+								if (!data.success)  startupload(data.error);
+								else
+								{
+									if (data.entry && $this2.IsMappedFolder(origcurrfolder))  origcurrfolder.SetEntry(data.entry);
 
-							// Start the upload.
-							startupload(true);
-						}, 250);
+									// Set a URL, headers, and params to send with the file data to the server.
+									fileinfo.url = 'http://www.dxh000130.top/filemanager/',
+
+									fileinfo.headers = {
+									};
+
+									fileinfo.params = {
+										path: JSON.stringify(fileinfo.folder.GetPathIDs()),
+										name: fileinfo.fullPath,
+										size: fileinfo.file.size,
+										queuestarted: queuestarted
+									};
+
+									fileinfo.params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'upload';
+
+									DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'upload', fileinfo.params]);
+
+									fileinfo.fileparam = 'file';
+									fileinfo.currpathparam = 'currpath';
+
+									// Send chunked uploads.  Requires the server to know how to put chunks back together.
+									if ($this.settings.fe_uploadchunksize)  fileinfo.chunksize = $this.settings.fe_uploadchunksize;
+
+									// Automatic retry count for the file on failure.
+									fileinfo.retries = 3;
+
+									// Start the upload.
+									startupload(true);
+								}
+							},
+							onerror: function(e) {
+								console.log(e);
+								startupload('Server/network error.');
+							}
+						});
+
+						xhr.Send();
 					}
 				},
-
+				concurrentuploads: $this.settings.fe_concurrentuploads,
 				// Optional upload handler function to finalize an uploaded file on a server (e.g. move from a temporary directory to the final location).
 				onfinishedupload: function(finalize, fileinfo) {
 					console.log(fileinfo);
 					// Simulate network delay.
-					setTimeout(function() {
-						finalize(true);
-					}, 250);
+					finalize(true);
+					//location.reload();
 				},
 
 				// Optional upload handler function to receive permanent error notifications.
@@ -580,34 +710,182 @@
 
 				oncopy: function(copied, srcpath, srcids, destfolder) {
 					// Simulate network delay.
-					setTimeout(function() {
-						// Fill an array with copied destination folder entries from the server.
-						var entries = [];
+					var $this2 = this;
 
-						copied(true, entries);
-					}, 250);
+					var initparams = {
+						srcpath: JSON.stringify($this2.GetPathIDs(srcpath)),
+						srcids: JSON.stringify(srcids),
+						destpath: JSON.stringify(destfolder.GetPathIDs())
+					};
+
+					initparams[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'copy_init';
+
+					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'copy_init', initparams]);
+
+					var xhr = new this.PrepareXHR({
+						url: 'http://www.dxh000130.top/filemanager/',
+						params: initparams,
+						onsuccess: function(e) {
+							var data = JSON.parse(e.target.responseText);
+//console.log(data);
+
+							if (!data.success)  copied(data.error);
+							else if (data.overwrite > 0 && !confirm($this2.FormatStr($this2.Translate('Copying will overwrite {0} ' + (data.overwrite === 1 ? 'item' : 'items') + '.  Proceed?'), data.overwrite)))  copied('Copy cancelled.');
+							else
+							{
+								var runxhr, origcurrfolder;
+
+								var CancelXHR = function() {
+									runxhr.Abort();
+								};
+
+								var progresstracker = $this2.CreateProgressTracker(CancelXHR);
+
+								var options = {
+									url: 'http://www.dxh000130.top/filemanager/',
+									params: {
+										copykey: data.copykey
+									},
+									onsuccess: function(e) {
+										var data = JSON.parse(e.target.responseText);
+//console.log(data);
+
+										if (!data.success)  copied(data.error, data.finalentries);
+										else
+										{
+											progresstracker.totalbytes = data.totalbytes;
+											progresstracker.queueditems = data.queueditems;
+											progresstracker.queuesizeunknown = data.queuesizeunknown;
+											progresstracker.itemsdone = data.itemsdone;
+											progresstracker.faileditems = data.faileditems;
+
+											if ($this2.IsMappedFolder(origcurrfolder))  origcurrfolder.UpdateEntries(data.currentries);
+
+											if (data.queueditems)  NextRun();
+											else
+											{
+												$this2.RemoveProgressTracker(progresstracker, 'Copying done');
+												progresstracker = null;
+
+												copied(true, data.finalentries);
+
+												runxhr.Destroy();
+												runxhr = null;
+											}
+										}
+									},
+									onerror: function(e) {
+										console.log(e);
+										copied('Server/network error.');
+
+										runxhr.Destroy();
+										runxhr = null;
+									},
+									onabort: function(e) {
+										progresstracker.queueditems = 0;
+										progresstracker.queuesizeunknown = false;
+
+										$this2.RemoveProgressTracker(progresstracker, 'Copying stopped');
+										progresstracker = null;
+
+										copied(false);
+
+										runxhr.Destroy();
+										runxhr = null;
+									}
+								};
+
+								options.params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'copy';
+
+								DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'copy', options.params]);
+
+								// Performs another copy operation cycle.
+								var NextRun = function() {
+									if (runxhr)  runxhr.Destroy();
+
+									origcurrfolder = $this2.GetCurrentFolder();
+									options.params.currpath = JSON.stringify(origcurrfolder.GetPathIDs());
+
+									runxhr = new $this2.PrepareXHR(options);
+
+									runxhr.Send();
+								};
+
+								NextRun();
+							}
+						},
+						onerror: function(e) {
+							console.log(e);
+							copied('Server/network error.');
+						}
+					});
+
+					xhr.Send();
 				},
 
 				onmove: function(moved, srcpath, srcids, destfolder) {
 					// Simulate network delay.
-					setTimeout(function() {
-						// Fill an array with moved destination folder entries from the server.
-						var entries = [];
+					var params = {
+						srcpath: JSON.stringify(this.GetPathIDs(srcpath)),
+						srcids: JSON.stringify(srcids),
+						destpath: JSON.stringify(destfolder.GetPathIDs())
+					};
 
-						moved(true, entries);
-					}, 250);
+					params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'move';
+
+					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'move', params]);
+
+					var xhr = new this.PrepareXHR({
+						url: 'http://www.dxh000130.top/filemanager/',
+						params: params,
+						onsuccess: function(e) {
+							var data = JSON.parse(e.target.responseText);
+//console.log(data);
+
+							if (!data.success)  moved(data.error);
+							else  moved(true, data.entries);
+						},
+						onerror: function(e) {
+							console.log(e);
+							moved('Server/network error.');
+						}
+					});
+
+					xhr.Send();
 				},
 
 				ondelete: function(deleted, folder, ids, entries, recycle) {
 					// Ask the user if they really want to delete/recycle the items.
-					const confirmation = confirm('Are you sure you want to permanently delete ' + (entries.length == 1 ? '"' + entries[0].name + '"' : entries.length + ' items') +  '?')
-					if (!recycle && !confirmation)  deleted('Cancelled deletion');
+					if (!$this.settings.recycling)  recycle = false;
+					if (!recycle && !confirm('Are you sure you want to permanently delete ' + (entries.length == 1 ? '"' + entries[0].name + '"' : entries.length + ' items') +  '?'))  deleted('Cancelled deletion');
 					else
 					{
-						// Simulate network delay.
-						setTimeout(function() {
-							deleted(true);
-						}, 250);
+						var params = {
+							path: JSON.stringify(folder.GetPathIDs()),
+							ids: JSON.stringify(ids)
+						};
+
+						params[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + (recycle ? 'recycle' : 'delete');
+
+						DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + (recycle ? 'recycle' : 'delete'), params]);
+
+						var xhr = new this.PrepareXHR({
+							url: 'http://www.dxh000130.top/filemanager/',
+							params: params,
+							onsuccess: function(e) {
+								var data = JSON.parse(e.target.responseText);
+//console.log(data);
+
+								if (!data.success)  deleted(data.error);
+								else  deleted(true);
+							},
+							onerror: function(e) {
+								console.log(e);
+								deleted('Server/network error.');
+							}
+						});
+
+						xhr.Send();
 					}
 				},
 			};
@@ -692,9 +970,8 @@
                 }, 20000);
             */
 		}
-		function AddFilesFromServer(this1, filetree, path, XHRstart, XHRfinish){
-			XHRstart.push("0")
-			console.log("path",path)
+		function AddFilesFromServer(this1, filetree, path){
+			//console.log("path",path)
 			var xhr = new PrepareXHR1({
 				url: "http://www.dxh000130.top/filemanager/",
 				params: {
@@ -705,7 +982,7 @@
 				onsuccess: function(e) {
 					//console.log(e)
 					var data = JSON.parse(e.target.responseText);
-					console.log("DatafromServer", data.entries);
+					//console.log("DatafromServer", data.entries);
 
 					if (data.success)
 					{
@@ -719,7 +996,7 @@
 									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
 								path1.push(element.name)
-								AddFilesFromServer(this1, filetree[element.name].children, path1, XHRstart, XHRfinish)
+								AddFilesFromServer(this1, filetree[element.name].children, path1)
 							}else {
 								//console.log("File", element)
 								filetree[element.name] = {
@@ -727,7 +1004,7 @@
 								}
 							}
 						})
-						XHRfinish.push("1")
+						return 1;
 					}
 					else
 					{
