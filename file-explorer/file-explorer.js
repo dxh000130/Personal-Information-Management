@@ -2266,7 +2266,6 @@
 				if ('attrs' in folderentry) pathitem.push(folderentry.attrs);
 
 				newpath.push(pathitem);
-
 				$this.SetPath(newpath);
 			}
 		};
@@ -6193,6 +6192,7 @@
 		$this.CreateNode = CreateNode;
 		$this.DebounceAttributes = DebounceAttributes;
 		$this.PrepareXHR = PrepareXHR;
+		$this.FileAnnotatesStore = FileAnnotatesStore;
 
 		$this.GetScrollLineHeight = function () {
 			return scrolllineheight;
@@ -7418,6 +7418,7 @@
 		fe.addEventListener('update_tool', UpdateToolHandler);
 
 		var ClickHandler = function (e) {
+
 			modal = document.getElementById("annotation-input-modal");
 			modal.style.display = "block";
 			var FilePath = ""
@@ -7434,6 +7435,12 @@
 			var StoreAnnotatesButton = document.getElementsByClassName("btnStyle")[0];
 			StoreAnnotatesButton.onclick = function () {
 				FileAnnotatesStore[FilePath] = document.getElementById("annotation-input").value;
+
+				var GetEntries = fe.GetSelectedFolderEntries()[0]
+				GetEntries.tooltip += "\nAnnotation: " + document.getElementById("annotation-input").value
+				console.log(fe)
+				fe.GetCurrentFolder().UpdateEntries(GetEntries)
+				fe.onrefresh
 				document.getElementById("annotation-input-modal").style.display = 'none'
 			}
 
