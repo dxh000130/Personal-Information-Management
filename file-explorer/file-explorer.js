@@ -7440,29 +7440,13 @@
 			}
 			var StoreAnnotatesButton = document.getElementsByClassName("btnStyle")[0];
 			StoreAnnotatesButton.onclick = function () {
-				//localStorage.FileAnnotatesStore[FilePath] = document.getElementById("annotation-input").value;
 				localStorage.setItem(FilePath, document.getElementById("annotation-input").value);
-				//console.log(localStorage.FileAnnotatesStore)
-				// var GetEntries = fe.GetSelectedFolderEntries()[0]
-				// var ENTRIES1 = window.globalConfig.fileTree;
-				// fe.GetCurrentFolder().GetPath().forEach(function (Path) {
-				// 	console.log(ENTRIES1)
-				// 	ENTRIES1 = ENTRIES1[Path[0]]["children"]
-				// })
-				// //console.log(GetEntries.name)
-				// console.log(ENTRIES1[GetEntries.name])
-				// ENTRIES1[GetEntries.name].tooltip += "\nAnnotation: " + document.getElementById("annotation-input").value
-				// GetEntries.tooltip += "\nAnnotation: " + document.getElementById("annotation-input").value
-				// console.log(window.globalConfig.fileTree)
-				// fe.GetCurrentFolder().UpdateEntries(GetEntries);
 
-				//var previousDir = fe.GetCurrentFolder().GetPath();
 				const folder = fe.GetCurrentFolder();
 				folder.SetEntries([]);
 				fe.settings.onrefresh(fe.GetCurrentFolder(), "");
 				document.getElementById("annotation-input-modal").style.display = 'none'
-				//setTimeout(fe.SetPath, 1000, previousDir);
-				// console.log(window.globalConfig.fileTree)
+
 			}
 
 		};
@@ -7471,11 +7455,6 @@
 	};
 	window.FileExplorer.RegisterTool(1, FileExplorerTool_AddAnnotates);
 
-	// var span = document.getElementsByClassName("close");
-	// span.onclick = function () {
-	// 	console.log("close");
-	// 	modal.style.display = "none";
-	// }
 
 	var FileExplorerTool_ItemCheckboxes = function (fe) {
 		if (!(this instanceof FileExplorerTool_ItemCheckboxes)) return new FileExplorerTool_ItemCheckboxes(fe);

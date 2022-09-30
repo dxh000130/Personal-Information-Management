@@ -190,13 +190,6 @@
 
 
 	<script type="text/javascript">
-		// Math.seed = 5;
-		// Math.seededrandom = function (){
-		// 	var max = 4294967296; // 2^32
-		// 	seed = 49734321;
-		// 	seed = (seed * 9301 + 49297) % max;
-		// 	return seed / max;
-		// }
 		window.globalConfig = {
 			fileTree : {
 				'/': {
@@ -220,14 +213,6 @@
 			// Back to regularly scheduled program.
 			var elem = document.getElementById('filemanager');
 
-	// var fileTree = {
-	// 	'/': {
-	// 		children: {
-	// 		},
-	// 	}
-	// };
-	// AddFilesFromServer(this, fileTree["/"].children, ["/"]);
-	// setTimeout(Main1,500, fileTree, elem);
 	Main1(window.globalConfig.fileTree, elem)
 
 })();
@@ -279,8 +264,6 @@
 			const idMap = {};
 			(function walkTree(node, name)  {
 				const { children = {} } = node;
-				//node.id = String(id++);
-				//node.name = name
 				idMap[node.id] = node;
 
 				for (const childName of Object.keys(children)) {
@@ -1159,28 +1142,7 @@
 				$this = null;
 			};
 		};
-		// function FileJsonFromFileTree(fileTree, filejson){
-		// 	//console.log(Object.keys(fileTree))
-		// 	for (const childName of Object.keys(fileTree)) {
-		// 		if (childName === "children"){
-		// 			FileJsonFromFileTree(fileTree['children'], filejson);
-		// 		}else{
-		// 			if (childName === "/"){
-		// 				filejson["/"] = []
-		// 				FileJsonFromFileTree(fileTree["/"], filejson["/"])
-		// 			}
-		// 			else if (fileTree[childName].type === "folder"){
-		// 				console.log(filejson)
-		// 				filejson.push({childName: {}})
-		// 				FileJsonFromFileTree(fileTree, filejson[childName])
-		// 			}else {
-		// 				//console.log("File", element)
-		//
-		// 			}
-		// 		}
-		// 		console.log(filejson)
-		// 	}
-		// }
+
 </script>
 
 
