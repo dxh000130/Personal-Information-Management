@@ -7436,13 +7436,20 @@
 				FileAnnotatesStore[FilePath] = document.getElementById("annotation-input").value;
 
 				var GetEntries = fe.GetSelectedFolderEntries()[0]
-				console.log(fe.GetCurrentFolder().GetPath())
-				console.log(GetEntries)
+				var ENTRIES1 = window.globalConfig.fileTree;
+				fe.GetCurrentFolder().GetPath().forEach(function (Path) {
+					console.log(ENTRIES1)
+					ENTRIES1 = ENTRIES1[Path[0]]["children"]
+				})
+				//console.log(GetEntries.name)
+				console.log(ENTRIES1[GetEntries.name])
+				ENTRIES1[GetEntries.name].tooltip += "\nAnnotation: " + document.getElementById("annotation-input").value
 				GetEntries.tooltip += "\nAnnotation: " + document.getElementById("annotation-input").value
 				console.log(window.globalConfig.fileTree)
 				fe.GetCurrentFolder().UpdateEntries(GetEntries);
-				//fe.settings.onrefresh(fe.GetCurrentFolder(), "");
+				fe.settings.onrefresh(fe.GetCurrentFolder(), "");
 				document.getElementById("annotation-input-modal").style.display = 'none'
+				console.log(window.globalConfig.fileTree)
 			}
 
 		};
