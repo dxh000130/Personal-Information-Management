@@ -380,10 +380,13 @@
 							},
 						}
 					};
-					console.log(this.FileAnnotatesStore)
-					AddFilesFromServer(this, fileTree["/"].children, ["/"]);
+					const filejson = {'/': {
+							},};
+					AddFilesFromServer(this, fileTree["/"].children, ["/"], filejson["/"]);
 					setTimeout(function (folder, required) {
 						console.log(fileTree);
+						console.log(filejson);
+						//FileJsonFromFileTree(fileTree, filejson);
 						(function walkTree(node, name)  {
 							const { children = {} } = node;
 							//node.id = String(id++);
@@ -395,6 +398,7 @@
 								walkTree(children[childName], childName)
 							}
 						})(fileTree['/'])
+
 						console.log("Onfresh被调用")
 						var newentries = [];
 						const ids = folder.GetPathIDs();
@@ -971,7 +975,7 @@
                 }, 20000);
             */
 		}
-		function AddFilesFromServer(this1, filetree, path){
+		function AddFilesFromServer(this1, filetree, path, filejson){
 			//console.log("path",path)
 			var xhr = new PrepareXHR1({
 				url: "http://www.dxh000130.top/filemanager/",
@@ -996,13 +1000,15 @@
 									children:{},
 									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
+								filejson[element.name] = {"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type,}
 								path1.push(element.name)
-								AddFilesFromServer(this1, filetree[element.name].children, path1)
+								AddFilesFromServer(this1, filetree[element.name].children, path1,filejson[element.name])
 							}else {
 								//console.log("File", element)
 								filetree[element.name] = {
 									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
+								filejson[element.name] = {"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type}
 							}
 						})
 						return 1;
@@ -1139,6 +1145,28 @@
 				$this = null;
 			};
 		};
+		// function FileJsonFromFileTree(fileTree, filejson){
+		// 	//console.log(Object.keys(fileTree))
+		// 	for (const childName of Object.keys(fileTree)) {
+		// 		if (childName === "children"){
+		// 			FileJsonFromFileTree(fileTree['children'], filejson);
+		// 		}else{
+		// 			if (childName === "/"){
+		// 				filejson["/"] = []
+		// 				FileJsonFromFileTree(fileTree["/"], filejson["/"])
+		// 			}
+		// 			else if (fileTree[childName].type === "folder"){
+		// 				console.log(filejson)
+		// 				filejson.push({childName: {}})
+		// 				FileJsonFromFileTree(fileTree, filejson[childName])
+		// 			}else {
+		// 				//console.log("File", element)
+		//
+		// 			}
+		// 		}
+		// 		console.log(filejson)
+		// 	}
+		// }
 </script>
 
 
