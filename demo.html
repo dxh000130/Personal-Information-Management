@@ -985,6 +985,11 @@
 		}
 		function AddFilesFromServer(this1, filetree, path, filejson){
 			//console.log("path",path)
+			var FilePath = ""
+			path.forEach(function (Path) {
+				FilePath = FilePath.concat(Path, "/")
+			})
+
 			var xhr = new PrepareXHR1({
 				url: "http://www.dxh000130.top/filemanager/",
 				params: {
@@ -998,23 +1003,39 @@
 					//console.log("DatafromServer", data.entries);
 
 					if (data.success)
-					{
+					{	var annotation = ""
 						//if ($this2.IsMappedFolder(folder))  folder.SetEntries(data.entries);
 						data.entries.forEach(function(element) {
 							if (element.type === "folder"){
+								FilePath1 = FilePath.concat(element.name, "/")
+
+								if (localStorage.getItem(FilePath1) !== null){
+									annotation = localStorage.getItem(FilePath1);
+								}else{
+									annotation = "";
+								}
 								var path1 = path.concat([]);
 								//console.log("Folder", element)
 								filetree[element.name] = {
 									children:{},
-									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
+									"hash":element.hash, "tooltip":element.tooltip+"\nAnnotation: "+annotation, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
 								filejson[element.name] = {"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type,}
 								path1.push(element.name)
 								AddFilesFromServer(this1, filetree[element.name].children, path1,filejson[element.name])
 							}else {
+								FilePath1 = FilePath.concat(element.name)
+								console.log(FilePath1)
+								console.log(localStorage.getItem(FilePath1))
+								if (localStorage.getItem(FilePath1) !== null){
+									annotation = localStorage.getItem(FilePath1);
+								}else{
+									annotation = "";
+								}
 								//console.log("File", element)
+
 								filetree[element.name] = {
-									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
+									"hash":element.hash, "tooltip":element.tooltip+"\nAnnotation: "+annotation, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
 								filejson[element.name] = {"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type}
 							}
