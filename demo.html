@@ -177,6 +177,7 @@
 			<!-- Modal content -->
 			<div class="modal-content">
 				<span class="close">&times;</span>
+				<div id="FileTree121"></div>
 				<div style="display:flex; flex-direction:column; align-items: center; justify-content: center;">
 					<p style = "font-size:125%;color:#888">File Annotation </p>
 					<input class = "inputStyle" type="text" id="annotation-input" />
@@ -196,7 +197,14 @@
 		// 	seed = (seed * 9301 + 49297) % max;
 		// 	return seed / max;
 		// }
-
+		window.globalConfig = {
+			fileTree : {
+				'/': {
+					children: {
+					},
+				}
+			},
+		}
 		var span = document.getElementsByClassName("close")[0];
 		span.onclick = function () {
 			var modal = document.getElementById("annotation-input-modal");
@@ -212,15 +220,15 @@
 			// Back to regularly scheduled program.
 			var elem = document.getElementById('filemanager');
 
-	const fileTree = {
-		'/': {
-			children: {
-			},
-		}
-	};
+	// var fileTree = {
+	// 	'/': {
+	// 		children: {
+	// 		},
+	// 	}
+	// };
 	// AddFilesFromServer(this, fileTree["/"].children, ["/"]);
 	// setTimeout(Main1,500, fileTree, elem);
-	Main1(fileTree, elem)
+	Main1(window.globalConfig.fileTree, elem)
 
 })();
 
@@ -374,12 +382,12 @@
 				},
 
 				onrefresh: function(folder, required) {
-					const fileTree = {
-						'/': {
-							children: {
-							},
-						}
-					};
+					// var fileTree = {
+					// 	'/': {
+					// 		children: {
+					// 		},
+					// 	}
+					// };
 					const filejson = {'/': {
 							},};
 					AddFilesFromServer(this, fileTree["/"].children, ["/"], filejson["/"]);
@@ -446,7 +454,7 @@
 						if (!dir.children) {
 							throw new Error(`${ids.join('/')} is not a dir`);
 						}
-
+						//console.log(folder);
 						folder.SetEntries(Object.values(dir.children).map(item => ({
 							id: item.id,
 							name: item.name,
@@ -976,7 +984,11 @@
             */
 		}
 		function AddFilesFromServer(this1, filetree, path, filejson){
-			//console.log("path",path)
+			var FilePath = ""
+			path.forEach(function (Path) {
+				FilePath = FilePath.concat(Path, "/")
+			})
+
 			var xhr = new PrepareXHR1({
 				url: "http://www.dxh000130.top/filemanager/",
 				params: {
@@ -985,28 +997,38 @@
 					xsrftoken: 'asdfasdf'
 				},
 				onsuccess: function(e) {
-					//console.log(e)
 					var data = JSON.parse(e.target.responseText);
-					//console.log("DatafromServer", data.entries);
 
 					if (data.success)
-					{
+					{	var annotation = ""
 						//if ($this2.IsMappedFolder(folder))  folder.SetEntries(data.entries);
 						data.entries.forEach(function(element) {
 							if (element.type === "folder"){
+								FilePath1 = FilePath.concat(element.name, "/")
+
+								if (localStorage.getItem(FilePath1) !== null){
+									annotation = localStorage.getItem(FilePath1);
+								}else{
+									annotation = "";
+								}
 								var path1 = path.concat([]);
-								//console.log("Folder", element)
 								filetree[element.name] = {
 									children:{},
-									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
+									"hash":element.hash, "tooltip":element.tooltip+"\nAnnotation: "+annotation, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
 								filejson[element.name] = {"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type,}
 								path1.push(element.name)
 								AddFilesFromServer(this1, filetree[element.name].children, path1,filejson[element.name])
 							}else {
-								//console.log("File", element)
+								FilePath1 = FilePath.concat(element.name)
+								if (localStorage.getItem(FilePath1) !== null){
+									annotation = localStorage.getItem(FilePath1);
+								}else{
+									annotation = "";
+								}
+
 								filetree[element.name] = {
-									"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type
+									"hash":element.hash, "tooltip":element.tooltip+"\nAnnotation: "+annotation, "id":element.id,"name":element.name, "size":element.size, "type":element.type
 								}
 								filejson[element.name] = {"hash":element.hash, "tooltip":element.tooltip, "id":element.id,"name":element.name, "size":element.size, "type":element.type}
 							}
