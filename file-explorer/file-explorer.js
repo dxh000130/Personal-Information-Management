@@ -1425,7 +1425,6 @@
 		allowcanceldone = true;
 	};
 
-
 	// File Explorer.
 	var nextmain_id = 1, coretools = [];
 	window.FileExplorer = function (parentelem, options) {
@@ -7437,10 +7436,12 @@
 				FileAnnotatesStore[FilePath] = document.getElementById("annotation-input").value;
 
 				var GetEntries = fe.GetSelectedFolderEntries()[0]
+				console.log(fe.GetCurrentFolder().GetPath())
+				console.log(GetEntries)
 				GetEntries.tooltip += "\nAnnotation: " + document.getElementById("annotation-input").value
-				console.log(fe)
-				fe.GetCurrentFolder().UpdateEntries(GetEntries)
-				fe.onrefresh
+				console.log(window.globalConfig.fileTree)
+				fe.GetCurrentFolder().UpdateEntries(GetEntries);
+				//fe.settings.onrefresh(fe.GetCurrentFolder(), "");
 				document.getElementById("annotation-input-modal").style.display = 'none'
 			}
 

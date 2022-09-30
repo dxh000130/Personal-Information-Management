@@ -177,6 +177,7 @@
 			<!-- Modal content -->
 			<div class="modal-content">
 				<span class="close">&times;</span>
+				<div id="FileTree121"></div>
 				<div style="display:flex; flex-direction:column; align-items: center; justify-content: center;">
 					<p style = "font-size:125%;color:#888">File Annotation </p>
 					<input class = "inputStyle" type="text" id="annotation-input" />
@@ -196,7 +197,14 @@
 		// 	seed = (seed * 9301 + 49297) % max;
 		// 	return seed / max;
 		// }
-
+		window.globalConfig = {
+			fileTree : {
+				'/': {
+					children: {
+					},
+				}
+			},
+		}
 		var span = document.getElementsByClassName("close")[0];
 		span.onclick = function () {
 			var modal = document.getElementById("annotation-input-modal");
@@ -212,15 +220,15 @@
 			// Back to regularly scheduled program.
 			var elem = document.getElementById('filemanager');
 
-	const fileTree = {
-		'/': {
-			children: {
-			},
-		}
-	};
+	// var fileTree = {
+	// 	'/': {
+	// 		children: {
+	// 		},
+	// 	}
+	// };
 	// AddFilesFromServer(this, fileTree["/"].children, ["/"]);
 	// setTimeout(Main1,500, fileTree, elem);
-	Main1(fileTree, elem)
+	Main1(window.globalConfig.fileTree, elem)
 
 })();
 
@@ -374,12 +382,12 @@
 				},
 
 				onrefresh: function(folder, required) {
-					const fileTree = {
-						'/': {
-							children: {
-							},
-						}
-					};
+					// var fileTree = {
+					// 	'/': {
+					// 		children: {
+					// 		},
+					// 	}
+					// };
 					const filejson = {'/': {
 							},};
 					AddFilesFromServer(this, fileTree["/"].children, ["/"], filejson["/"]);
@@ -446,7 +454,7 @@
 						if (!dir.children) {
 							throw new Error(`${ids.join('/')} is not a dir`);
 						}
-
+						//console.log(folder);
 						folder.SetEntries(Object.values(dir.children).map(item => ({
 							id: item.id,
 							name: item.name,

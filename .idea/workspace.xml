@@ -4,6 +4,7 @@
     <list default="true" id="4d72e0d3-e92f-48a3-baa9-7648bae77290" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/demo.html" beforeDir="false" afterPath="$PROJECT_DIR$/demo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file-explorer/file-explorer.js" beforeDir="false" afterPath="$PROJECT_DIR$/file-explorer/file-explorer.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +15,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -82,8 +84,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/file-explorer/file-explorer.js</url>
-          <line>6194</line>
-          <properties lambdaOrdinal="-1" />
+          <line>6193</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
