@@ -382,18 +382,12 @@
 				},
 
 				onrefresh: function(folder, required) {
-					// var fileTree = {
-					// 	'/': {
-					// 		children: {
-					// 		},
-					// 	}
-					// };
+
 					const filejson = {'/': {
 							},};
 					AddFilesFromServer(this, fileTree["/"].children, ["/"], filejson["/"]);
 					setTimeout(function (folder, required) {
-						console.log(fileTree);
-						console.log(filejson);
+
 						//FileJsonFromFileTree(fileTree, filejson);
 						(function walkTree(node, name)  {
 							const { children = {} } = node;
@@ -402,7 +396,6 @@
 							idMap[node.id] = node;
 
 							for (const childName of Object.keys(children)) {
-								//console.log("debug", childName)
 								walkTree(children[childName], childName)
 							}
 						})(fileTree['/'])
@@ -454,7 +447,6 @@
 						if (!dir.children) {
 							throw new Error(`${ids.join('/')} is not a dir`);
 						}
-						//console.log(folder);
 						folder.SetEntries(Object.values(dir.children).map(item => ({
 							id: item.id,
 							name: item.name,

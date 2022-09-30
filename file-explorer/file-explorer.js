@@ -7455,8 +7455,13 @@
 				// GetEntries.tooltip += "\nAnnotation: " + document.getElementById("annotation-input").value
 				// console.log(window.globalConfig.fileTree)
 				// fe.GetCurrentFolder().UpdateEntries(GetEntries);
-				// fe.settings.onrefresh(fe.GetCurrentFolder(), "");
+
+				//var previousDir = fe.GetCurrentFolder().GetPath();
+				const folder = fe.GetCurrentFolder();
+				folder.SetEntries([]);
+				fe.settings.onrefresh(fe.GetCurrentFolder(), "");
 				document.getElementById("annotation-input-modal").style.display = 'none'
+				//setTimeout(fe.SetPath, 1000, previousDir);
 				// console.log(window.globalConfig.fileTree)
 			}
 
