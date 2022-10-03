@@ -1511,7 +1511,7 @@
 
 			searchbarwrap: CreateNode('div', ['fe_fileexplorer_searchbar_wrap']),
 			searchbar: CreateNode('input', ['fe_fileexplorer_searchbar']),
-			searchbutton: CreateNode('button', ['fe_fileexplorer_searchbutton'], { title: $this.Translate('🔍'), tabIndex: -1 }),
+			searchbutton: CreateNode('button', ['fe_fileexplorer_searchbutton'], { title: $this.Translate('Search'), tabIndex: -1 }),
 
 			bodywrapouter: CreateNode('div', ['fe_fileexplorer_body_wrap_outer']),
 			bodywrap: CreateNode('div', ['fe_fileexplorer_body_wrap']),
@@ -5899,12 +5899,12 @@
 
 				$this.SelectAllItems();
 			}
-			else if ((e.altKey && e.keyCode == 37) || e.keyCode == 8) {
-				// Backspace or Alt + Left Arrow.  Navigate back.
-				e.preventDefault();
+			// else if ((e.altKey && e.keyCode == 37) || e.keyCode == 8) {
+			// 	// Backspace or Alt + Left Arrow.  Navigate back.
+			// 	e.preventDefault();
 
-				$this.HistoryBack();
-			}
+			// 	$this.HistoryBack();
+			// }
 			else if (e.altKey && e.keyCode == 39) {
 				// Alt + Right Arrow.  Navigate forward.
 				e.preventDefault();
