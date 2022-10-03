@@ -2,9 +2,10 @@
 	// CubicleSoft PHP web browser state emulation class.
 	// (C) 2021 CubicleSoft.  All Rights Reserved.
 	header("Access-Control-Allow-Origin: *"); //CORS
-	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 	header('Access-Control-Allow-Headers:*');
 	header("Access-Control-Request-Headers: *");
+	header("Access-Control-Allow-Credentials: true");
 	// Requires the CubicleSoft PHP HTTP class for HTTP/HTTPS.
 	class WebBrowser
 	{

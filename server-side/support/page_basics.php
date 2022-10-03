@@ -3,9 +3,10 @@
 	// (C) 2019 CubicleSoft.  All Rights Reserved.
 
 	header("Access-Control-Allow-Origin: *"); //CORS
-	header('Access-Control-Allow-Methods:*');
+	header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 	header('Access-Control-Allow-Headers:*');
 	header("Access-Control-Request-Headers: *");
+	header("Access-Control-Allow-Credentials: true");
 	// Most functionality has been moved into FlexForms.  Much of this is legacy interface code for convenience and to avoid breaking things badly.
 	require_once "flex_forms.php";
 	if (file_exists(str_replace("\\", "/", dirname(__FILE__)) . "/flex_forms_extras.php"))  require_once str_replace("\\", "/", dirname(__FILE__)) . "/flex_forms_extras.php";

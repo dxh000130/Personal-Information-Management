@@ -4,7 +4,12 @@
     <list default="true" id="4d72e0d3-e92f-48a3-baa9-7648bae77290" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/demo.html" beforeDir="false" afterPath="$PROJECT_DIR$/demo.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-explorer/file-explorer.js" beforeDir="false" afterPath="$PROJECT_DIR$/file-explorer/file-explorer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/file/New Folder (2)/Lab06.html" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/file/New Folder (2)/Lab06.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/file/grub.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/file/grub.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/index_hook.php" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/index_hook.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/support/page_basics.php" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/support/page_basics.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/support/web_browser.php" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/support/web_browser.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +67,8 @@
       <workItem from="1664145702683" duration="8725000" />
       <workItem from="1664235827053" duration="11971000" />
       <workItem from="1664325188609" duration="4699000" />
+      <workItem from="1664786848020" duration="597000" />
+      <workItem from="1664792021599" duration="676000" />
     </task>
     <servers />
   </component>
@@ -84,7 +91,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/file-explorer/file-explorer.js</url>
-          <line>6193</line>
+          <line>6201</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
