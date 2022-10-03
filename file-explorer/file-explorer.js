@@ -1654,7 +1654,7 @@
 		elems.toolbar.appendChild(elems.searchbarwrap);
 		elems.searchbarwrap.appendChild(elems.searchbar);
 		elems.searchbarwrap.appendChild(elems.searchbutton);
-		
+
 		elems.bodytoolsscrollwrap.appendChild(elems.bodytoolbar);
 		elems.itemsscrollwrapinner.appendChild(elems.itemsmessagewrap);
 		elems.itemsscrollwrapinner.appendChild(elems.itemswrap);
@@ -5899,12 +5899,12 @@
 
 				$this.SelectAllItems();
 			}
-			else if ((e.altKey && e.keyCode == 37) || e.keyCode == 8) {
-				// Backspace or Alt + Left Arrow.  Navigate back.
-				e.preventDefault();
-
-				$this.HistoryBack();
-			}
+			// else if ((e.altKey && e.keyCode == 37) || e.keyCode == 8) {
+			// 	// Backspace or Alt + Left Arrow.  Navigate back.
+			// 	e.preventDefault();
+			//
+			// 	$this.HistoryBack();
+			// }
 			else if (e.altKey && e.keyCode == 39) {
 				// Alt + Right Arrow.  Navigate forward.
 				e.preventDefault();
