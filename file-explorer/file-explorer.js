@@ -1509,10 +1509,6 @@
 			pathsegmentsscrollwrap: CreateNode('div', ['fe_fileexplorer_path_segments_scroll_wrap']),
 			pathsegmentswrap: CreateNode('div', ['fe_fileexplorer_path_segments_wrap']),
 
-			searchbarwrap: CreateNode('div', ['fe_fileexplorer_searchbar_wrap']),
-			searchbar: CreateNode('input', ['fe_fileexplorer_searchbar']),
-			searchbutton: CreateNode('button', ['fe_fileexplorer_searchbutton'], { title: $this.Translate('Search'), tabIndex: -1 }),
-
 			bodywrapouter: CreateNode('div', ['fe_fileexplorer_body_wrap_outer']),
 			bodywrap: CreateNode('div', ['fe_fileexplorer_body_wrap']),
 
@@ -1650,10 +1646,6 @@
 
 		elems.toolbar.appendChild(elems.navtools);
 		elems.toolbar.appendChild(elems.pathwrap);
-
-		elems.toolbar.appendChild(elems.searchbarwrap);
-		elems.searchbarwrap.appendChild(elems.searchbar);
-		elems.searchbarwrap.appendChild(elems.searchbutton);
 
 		elems.bodytoolsscrollwrap.appendChild(elems.bodytoolbar);
 		elems.itemsscrollwrapinner.appendChild(elems.itemsmessagewrap);
@@ -5899,12 +5891,12 @@
 
 				$this.SelectAllItems();
 			}
-			// else if ((e.altKey && e.keyCode == 37) || e.keyCode == 8) {
-			// 	// Backspace or Alt + Left Arrow.  Navigate back.
-			// 	e.preventDefault();
+			else if ((e.altKey && e.keyCode == 37) || e.keyCode == 8) {
+				// Backspace or Alt + Left Arrow.  Navigate back.
+				e.preventDefault();
 
-			// 	$this.HistoryBack();
-			// }
+				$this.HistoryBack();
+			}
 			else if (e.altKey && e.keyCode == 39) {
 				// Alt + Right Arrow.  Navigate forward.
 				e.preventDefault();
