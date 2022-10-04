@@ -524,7 +524,8 @@
 							for (let child in childs) {
 								//console.log(childs[child])
 								if (childs[child].name.search(input) !== -1){
-									resultarray.push(child)
+									console.log(child)
+									resultarray.push(childs[child].id)
 								}
 								if (childs[child].children) {
 									//console.log('sucess');
@@ -558,17 +559,18 @@
 						SearchInput.oninput = function () {
 							console.log("SearchInput", SearchInput.value)
 							if (SearchInput.value !== ""){
-								var resultarray = new Array();
+								let resultarray = new Array();
 								previousDir = fe.GetCurrentFolder().GetPath();
 								const folder = fe.GetCurrentFolder();
 								SearchResult(fileTree["/"].children, resultarray);
 								console.log(resultarray);
+
 								folder.SetEntries(Array.from(resultarray).map(itemId => ({
 									id: itemId,
 									name: idMap[itemId].name,
 									type: idMap[itemId].children ? 'folder' : 'file',
 									hash: idMap[itemId].hash,
-									tooltip: idMap[itemId].tooltip,
+									tooltip: idMap[itemId].tooltip + "\nLocation: " + itemId,
 									size: idMap[itemId].size,
 								})));
 							}else {
@@ -1170,7 +1172,7 @@
 								var path1 = path.concat([]);
 								filetree[element.name] = {
 									children: {},
-									"hash": element.hash, "tooltip": element.tooltip + "\nAnnotation: " + annotation, "id": element.id, "name": element.name, "size": element.size, "type": element.type
+									"hash": element.hash, "tooltip": element.tooltip + "\nAnnotation: " + annotation, "id": FilePath1, "name": element.name, "size": element.size, "type": element.type
 								}
 								filejson[element.name] = { "hash": element.hash, "tooltip": element.tooltip, "id": element.id, "name": element.name, "size": element.size, "type": element.type, }
 								path1.push(element.name)
@@ -1182,9 +1184,9 @@
 								} else {
 									annotation = "";
 								}
-
+								//console.log("Debug", FilePath1)
 								filetree[element.name] = {
-									"hash": element.hash, "tooltip": element.tooltip + "\nAnnotation: " + annotation, "id": element.id, "name": element.name, "size": element.size, "type": element.type
+									"hash": element.hash, "tooltip": element.tooltip + "\nAnnotation: " + annotation, "id": FilePath1, "name": element.name, "size": element.size, "type": element.type
 								}
 								filejson[element.name] = { "hash": element.hash, "tooltip": element.tooltip, "id": element.id, "name": element.name, "size": element.size, "type": element.type }
 							}
