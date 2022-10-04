@@ -333,6 +333,15 @@
 			return html;
 		}
 
+		// StoreAnnotatesButton.onclick = function () {
+		// 	localStorage.setItem(FilePath, document.getElementById("annotation-input").value);
+		//
+		// 	const folder = fe.GetCurrentFolder();
+		// 	folder.SetEntries([]);
+		// 	fe.settings.onrefresh(fe.GetCurrentFolder(), "");
+		// 	document.getElementById("annotation-input-modal").style.display = 'none'
+		//
+		// }
 		var span = document.getElementsByClassName("close")[0];
 		span.onclick = function () {
 			var modal = document.getElementById("annotation-input-modal");
@@ -508,8 +517,22 @@
 					AddFilesFromServer(this, fileTree["/"].children, ["/"], filejson["/"]);
 					setTimeout(function (folder, required) {
 
-						console.log('tree', fileTree);
+						console.log('tree', fileTree['/'].children);
 						let html = gen_tree(fileTree['/'].children);
+						SearchResult = function (childs, resultarray) {
+							var input = document.getElementsByClassName("fe_fileexplorer_searchbar")[0].value;
+							for (let child in childs) {
+								//console.log(childs[child])
+								if (childs[child].name.search(input) !== -1){
+									resultarray.push(child)
+								}
+								if (childs[child].children) {
+									//console.log('sucess');
+									SearchResult(childs[child].children, resultarray) // 如果有chidren就继续遍历
+								}
+
+							}
+						}
 						document.getElementById('tree').innerHTML = html;
 						//console.log(html);
 						//console.log(filejson);
@@ -530,6 +553,28 @@
 						var newentries = [];
 						const ids = folder.GetPathIDs();
 						const firstId = ids[0];
+
+						var SearchInput = document.getElementsByClassName("fe_fileexplorer_searchbar")[0];
+						SearchInput.oninput = function () {
+							console.log("SearchInput", SearchInput.value)
+							if (SearchInput.value !== ""){
+								var resultarray = new Array();
+								previousDir = fe.GetCurrentFolder().GetPath();
+								const folder = fe.GetCurrentFolder();
+								SearchResult(fileTree["/"].children, resultarray);
+								console.log(resultarray);
+								folder.SetEntries(Array.from(resultarray).map(itemId => ({
+									id: itemId,
+									name: idMap[itemId].name,
+									type: idMap[itemId].children ? 'folder' : 'file',
+									hash: idMap[itemId].hash,
+									tooltip: idMap[itemId].tooltip,
+									size: idMap[itemId].size,
+								})));
+							}else {
+								fe.SetPath(previousDir)
+							}
+						}
 
 
 						if (firstId === 'HFO View') {
