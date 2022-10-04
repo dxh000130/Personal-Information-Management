@@ -570,7 +570,8 @@
 									name: idMap[itemId].name,
 									type: idMap[itemId].children ? 'folder' : 'file',
 									hash: idMap[itemId].hash,
-									tooltip: idMap[itemId].tooltip + "\nLocation: " + itemId,
+									tooltip: idMap[itemId].tooltip + "\nLocation: " +
+											"" + itemId,
 									size: idMap[itemId].size,
 								})));
 							}else {
@@ -1163,7 +1164,6 @@
 						data.entries.forEach(function (element) {
 							if (element.type === "folder") {
 								FilePath1 = FilePath.concat(element.name, "/")
-
 								if (localStorage.getItem(FilePath1) !== null) {
 									annotation = localStorage.getItem(FilePath1);
 								} else {

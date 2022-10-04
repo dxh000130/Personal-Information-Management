@@ -7421,13 +7421,13 @@
 					FilePath = FilePath.concat(Path[0], "/")
 				})
 				var GetEntries = fe.GetSelectedFolderEntries()[0]
-				if (GetEntries.type === "folder"){
-					FilePath = FilePath.concat(fe.GetFocusedItemID(), "/")
-				}else {
-					FilePath = FilePath.concat(fe.GetFocusedItemID())
-				}
-
-				console.log(FilePath)
+				// if (GetEntries.type === "folder"){
+				// 	FilePath = FilePath.concat(fe.GetFocusedItemID(), "/")
+				// }else {
+				// 	FilePath = FilePath.concat(fe.GetFocusedItemID())
+				// }
+				FilePath = GetEntries.id
+				console.log("FilePath", FilePath)
 				if (localStorage.getItem(FilePath) !== null){
 					document.getElementById("annotation-input").value = localStorage.getItem(FilePath);
 				}else {
