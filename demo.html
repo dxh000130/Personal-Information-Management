@@ -523,7 +523,9 @@
 							var input = document.getElementsByClassName("fe_fileexplorer_searchbar")[0].value;
 							for (let child in childs) {
 								//console.log(childs[child])
-								if (childs[child].name.search(input) !== -1){
+								var FileName = childs[child].name.toUpperCase();
+								input = input.toUpperCase();
+								if (FileName.search(input) !== -1){
 									console.log(child)
 									resultarray.push(childs[child].id)
 								}
