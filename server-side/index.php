@@ -154,111 +154,20 @@ header("Access-Control-Allow-Origin: *"); //CORS
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title><?=htmlspecialchars(BB_Translate("File Manager"))?></title>
-<link rel="stylesheet" type="text/css" href="support/main.css">
-<link rel="stylesheet" type="text/css" href="support/file-explorer/file-explorer.css">
-<link rel="stylesheet" type="text/css" href="support/file-manager.css">
+<title>FileManager Endpoint</title>
+
 </head>
 <body>
-<div id="filemanager"></div>
 
-<script type="text/javascript" src="support/file-explorer/file-explorer.js"></script>
-<script type="text/javascript" src="support/flexforms/flex_forms.js"></script>
 <?php
 	if ($config["tabbed"])
 	{
 ?>
-<script type="text/javascript" src="support/ace/ace.js"></script>
-<script type="text/javascript" src="support/flexforms/flex_forms_dialog.js"></script>
+
 <?php
 	}
 ?>
-<script type="text/javascript" src="support/file-manager.js"></script>
 
-<script type="text/javascript">
-(function() {
-	var elem = document.getElementById('filemanager');
-
-	var xhrparammap = {
-		'file_explorer_refresh': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_refresh")?>' },
-		'file_explorer_rename': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_rename")?>' },
-		'file_explorer_file_info': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_file_info")?>' },
-		'file_explorer_load_file': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_load_file")?>' },
-		'file_explorer_save_file': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_save_file")?>' },
-		'file_explorer_new_folder': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_new_folder")?>' },
-		'file_explorer_new_file': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_new_file")?>' },
-		'file_explorer_upload_init': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_upload_init")?>' },
-		'file_explorer_upload': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_upload")?>' },
-		'file_explorer_download': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_download")?>' },
-		'file_explorer_copy_init': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_copy_init")?>' },
-		'file_explorer_copy': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_copy")?>' },
-		'file_explorer_move': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_move")?>' },
-		'file_explorer_recycle': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_recycle")?>' },
-		'file_explorer_delete': { sec_t: '<?=BB_CreateSecurityToken("file_explorer_delete")?>' },
-	};
-
-	var options = {
-		fe_uploadchunksize: <?=FileUploadHelper::GetMaxUploadFileSize()?>,
-
-		ace_modes: <?=json_encode($acemodes, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)?>,
-		ace_themes: <?=json_encode($acethemes, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)?>,
-
-		recycling: <?=($config["recycling"] ? "true" : "false")?>,
-		tabbed: <?=($config["tabbed"] ? "true" : "false")?>,
-
-		onxhrparams: function(action, params) {
-			if (xhrparammap[action])  Object.assign(params, xhrparammap[action]);
-		}
-	};
-
-<?php
-	// Allow modification of the 'xhrparammap' and 'options' objects.
-	if (is_callable("ModifyFileManagerOptions"))  call_user_func("ModifyFileManagerOptions");
-?>
-
-	var fm = new window.FileManager(elem, options);
-
-/*
-	// Verify that there aren't any leaked globals.
-	setTimeout(function() {
-		// Create an iframe and put it in the <body>.
-		var iframe = document.createElement('iframe');
-		document.body.appendChild(iframe);
-
-		// We'll use this to get a "pristine" window object.
-		var pristineWindow = iframe.contentWindow.window;
-
-		// Go through every property on `window` and filter it out if
-		// the iframe's `window` also has it.
-		console.log(Object.keys(window).filter(function(key) {
-			return !pristineWindow.hasOwnProperty(key)
-		}));
-
-		// Remove the iframe.
-		document.body.removeChild(iframe)
-	}, 15000);
-*/
-
-<?php
-	// Keep PHP sessions alive.
-	if (session_status() === PHP_SESSION_ACTIVE)
-	{
-?>
-	setInterval(function() {
-		var xhr = new fm.PrepareXHR({
-			url: '<?=BB_GetRequestURLBase()?>',
-			params: {
-				action: 'heartbeat',
-				sec_t: '<?=BB_CreateSecurityToken("heartbeat")?>'
-			}
-		});
-
-		xhr.Send();
-	}, 5 * 60 * 1000);
-<?php
-	}
-?>
-})();
 </script>
 
 </body>

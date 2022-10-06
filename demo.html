@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
 <head>
-	<title>CubicleSoft File Explorer Demo</title>
+	<title>File Explorer Demo</title>
 </head>
 
 <body>
@@ -299,6 +299,7 @@
 
 
 	<script type="text/javascript">
+		window.EndPointURL = "https://www.dxh000130.top/server-side/" //Need Change
 		window.globalConfig = {
 			fileTree: {
 				'/': {
@@ -643,7 +644,7 @@
 					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'rename', params]);
 
 					var xhr = new this.PrepareXHR({
-						url: 'http://www.dxh000130.top/filemanager/',
+						url: window.EndPointURL,
 						params: params,
 						onsuccess: function (e) {
 							var data = JSON.parse(e.target.responseText);
@@ -676,7 +677,7 @@
 					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'new_folder', params]);
 
 					var xhr = new this.PrepareXHR({
-						url: 'http://www.dxh000130.top/filemanager/',
+						url: window.EndPointURL,
 						params: params,
 						onsuccess: function (e) {
 							var data = JSON.parse(e.target.responseText);
@@ -705,7 +706,7 @@
 					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'new_file', params]);
 
 					var xhr = new this.PrepareXHR({
-						url: 'http://www.dxh000130.top/filemanager/',
+						url: window.EndPointURL,
 						params: params,
 						onsuccess: function (e) {
 							var data = JSON.parse(e.target.responseText);
@@ -732,7 +733,7 @@
 					if (fileinfo.type === 'dir') {
 						// Create a directory.  This type only shows up if the directory is empty.
 						// Set a URL, headers, and params to send to the server.
-						fileinfo.url = 'http://www.dxh000130.top/filemanager/';
+						fileinfo.url = window.EndPointURL;
 
 						fileinfo.headers = {
 						};
@@ -771,7 +772,7 @@
 						console.log(initparams)
 						// Prepare the file upload on the server.
 						var xhr = new this.PrepareXHR({
-							url: 'http://www.dxh000130.top/filemanager/',
+							url: window.EndPointURL,
 							params: initparams,
 							onsuccess: function (e) {
 								var data = JSON.parse(e.target.responseText);
@@ -782,7 +783,7 @@
 									if (data.entry && $this2.IsMappedFolder(origcurrfolder)) origcurrfolder.SetEntry(data.entry);
 
 									// Set a URL, headers, and params to send with the file data to the server.
-									fileinfo.url = 'http://www.dxh000130.top/filemanager/',
+									fileinfo.url = window.EndPointURL,
 
 										fileinfo.headers = {
 										};
@@ -844,7 +845,7 @@
 						// Optional:  HTTP method to use.
 						//				options.method = 'POST';
 
-						options.url = 'http://www.dxh000130.top/filemanager/';
+						options.url = window.EndPointURL;
 
 						options.params = {
 							path: JSON.stringify(folder.GetPathIDs()),
@@ -878,7 +879,7 @@
 				// Calculated information must be fully synchronous (i.e. no AJAX calls).  Chromium only.
 				ondownloadurl: function (result, folder, ids, entry) {
 					result.name = (ids.length === 1 ? (entry.type === 'file' ? entry.name : entry.name + '.zip') : 'download-' + Date.now() + '.zip');
-					result.url = 'http://www.dxh000130.top/filemanager/?action=download&xsrfdata=asdfasdfasdf&xsrftoken=asdfasdf&path=' + encodeURIComponent(JSON.stringify(folder.GetPathIDs())) + '&ids=' + encodeURIComponent(JSON.stringify(ids));
+					result.url = window.EndPointURL + '?action=download&xsrfdata=asdfasdfasdf&xsrftoken=asdfasdf&path=' + encodeURIComponent(JSON.stringify(folder.GetPathIDs())) + '&ids=' + encodeURIComponent(JSON.stringify(ids));
 					console.log(result.url)
 				},
 
@@ -897,7 +898,7 @@
 					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'copy_init', initparams]);
 
 					var xhr = new this.PrepareXHR({
-						url: 'http://www.dxh000130.top/filemanager/',
+						url: window.EndPointURL,
 						params: initparams,
 						onsuccess: function (e) {
 							var data = JSON.parse(e.target.responseText);
@@ -915,7 +916,7 @@
 								var progresstracker = $this2.CreateProgressTracker(CancelXHR);
 
 								var options = {
-									url: 'http://www.dxh000130.top/filemanager/',
+									url: window.EndPointURL,
 									params: {
 										copykey: data.copykey
 									},
@@ -1007,7 +1008,7 @@
 					DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'move', params]);
 
 					var xhr = new this.PrepareXHR({
-						url: 'http://www.dxh000130.top/filemanager/',
+						url: window.EndPointURL,
 						params: params,
 						onsuccess: function (e) {
 							var data = JSON.parse(e.target.responseText);
@@ -1040,7 +1041,7 @@
 						DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + (recycle ? 'recycle' : 'delete'), params]);
 
 						var xhr = new this.PrepareXHR({
-							url: 'http://www.dxh000130.top/filemanager/',
+							url: window.EndPointURL,
 							params: params,
 							onsuccess: function (e) {
 								var data = JSON.parse(e.target.responseText);
@@ -1136,7 +1137,7 @@
 			})
 
 			var xhr = new PrepareXHR1({
-				url: "http://www.dxh000130.top/filemanager/",
+				url: window.EndPointURL,
 				params: {
 					action: 'file_explorer_refresh',
 					path: JSON.stringify(path),
