@@ -604,10 +604,6 @@
 							containerEl.prepend(tagList);
 							return;
 						}
-						if (firstId === 'Tree Visualization') {
-							document.getElementsByClassName('fe_fileexplorer_items_scroll_wrap')[0].style.display = 'none';
-
-						}
 						tagList.remove();
 						tagList.innerHTML = '';
 						let dir = fileTree['/'];
@@ -1101,17 +1097,6 @@
 				} else {
 					previousDir = fe.GetCurrentFolder().GetPath();
 					fe.SetPath([['Tag View', 'Tag View', { canmodify: true }]])
-				}
-
-			});
-			fe.SetNamedStatusBarText('toggleTreeView', 'Tree Visualization', null, () => {
-				const currentDir = fe.GetCurrentFolder().GetPath();
-
-				if (currentDir[0][0] === 'Tree Visualization') {
-					fe.SetPath(previousDir)
-				} else {
-					previousDir = fe.GetCurrentFolder().GetPath();
-					fe.SetPath([['Tree Visualization', 'Tree Visualization', { canmodify: false }]])
 				}
 
 			});
