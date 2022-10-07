@@ -204,16 +204,20 @@ Class Documentation
 Directory Structure
 ------
     .
-    ├── artwork     # The
-        ├── Controllers          # 
-    ├── docs        # 
-    ├── file-exploer                 # 
-    ├── server-side                 # 
-    ├── README.md                 # 
-    ├── demo.html                 # 
-    ├── package.json                 # 
+    ├── artwork                      # Some ICONS
+    ├── docs                         # Helpful documentation
+    ├── file-exploer                 # Front-end
+    ├── server-side                  # End-point
+    ├── README.md                    # This document
+    ├── demo.html                    # Demo website
 	
 Contributing
 ------
+Xuheng Duan  
+Evelyn Feng  
+Xiaohan Liu  
+Siqi Tong  
+Jiajia Xu  
+
 
  
