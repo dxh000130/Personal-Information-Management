@@ -468,7 +468,9 @@
 
 				fe.addEventListener('update_tool', (currfolder, attrs) => {
 					const selectedIds = fe.GetSelectedItemIDs();
-					const enabled = !currfolder.waiting && selectedIds.length === 1 && (!('canmodify' in attrs) || attrs.canmodify) && !idMap[selectedIds[0]].children;
+					console.log(selectedIds[0])
+					console.log(idMap)
+					const enabled = !currfolder.waiting && selectedIds.length === 1 && (!('canmodify' in attrs) || attrs.canmodify);
 
 					if (enabled) {
 						node.classList.remove('fe_fileexplorer_disabled')
@@ -1152,6 +1154,7 @@
 						data.entries.forEach(function (element) {
 							if (element.type === "folder") {
 								FilePath1 = FilePath.concat(element.name, "/")
+								console.log("FilePath1", FilePath1)
 								if (localStorage.getItem(FilePath1) !== null) {
 									annotation = localStorage.getItem(FilePath1);
 								} else {
@@ -1166,7 +1169,9 @@
 								path1.push(element.name)
 								AddFilesFromServer(this1, filetree[element.name].children, path1, filejson[element.name])
 							} else {
+
 								FilePath1 = FilePath.concat(element.name)
+								console.log("FilePath1", FilePath1)
 								if (localStorage.getItem(FilePath1) !== null) {
 									annotation = localStorage.getItem(FilePath1);
 								} else {

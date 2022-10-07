@@ -6778,7 +6778,6 @@
 			var calledback = false;
 			var createdcallback = function (newentry) {
 				if (calledback || fe.IsDestroyed()) return;
-
 				calledback = true;
 
 				fe.StopOperationIndicator();
@@ -6786,7 +6785,12 @@
 				if (typeof newentry === 'object') {
 					if (fe.IsMappedFolder(origfolder)) {
 						fe.SetNamedStatusBarText('message', '');
-
+						var FilePath2 = ""
+						origfolder.GetPath().forEach(function (Path) {
+							FilePath2 = FilePath2.concat(Path[0], "/");
+						})
+						FilePath2 = FilePath2.concat(newentry.id);
+						newentry.id = FilePath2;
 						origfolder.SetEntry(newentry);
 
 						if (fe.GetCurrentFolder() === origfolder) {
@@ -6881,10 +6885,16 @@
 				if (typeof newentry === 'object') {
 					if (fe.IsMappedFolder(origfolder)) {
 						fe.SetNamedStatusBarText('message', '');
-
+						var FilePath2 = ""
+						origfolder.GetPath().forEach(function (Path) {
+							FilePath2 = FilePath2.concat(Path[0], "/");
+						})
+						FilePath2 = FilePath2.concat(newentry.id);
+						newentry.id = FilePath2;
 						origfolder.SetEntry(newentry);
 
 						if (fe.GetCurrentFolder() === origfolder) {
+							console.log(newentry)
 							fe.SetFocusItem(newentry.id, true);
 							fe.ScrollToFocusedItem();
 							fe.SetSelectedItems([newentry.id]);
