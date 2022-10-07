@@ -1,5 +1,6 @@
 # Folder and File Explorer
-
+![status](https://img.shields.io/badge/Build%20and%20Test-Pass-success)  
+![Building Status](https://img.shields.io/badge/Status-Pass-success)  
 A zero dependencies, customizable, pure Javascript widget for navigating, managing (move, copy, delete), uploading, and downloading files and folders or other hierarchical object structures on any modern web browser.
 
 <img width="1915" alt="image" src="https://user-images.githubusercontent.com/34475380/194520489-06f36507-a302-4fad-924a-7e033c54c310.png">
