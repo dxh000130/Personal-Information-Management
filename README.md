@@ -44,7 +44,7 @@ Left-click on a folder to expand the file structure of the folder
 ![未标题-7](https://user-images.githubusercontent.com/34475380/194525791-f85f178e-e4a7-4db6-b46a-a7a4fd57a72b.jpg)
 ![未标题-8](https://user-images.githubusercontent.com/34475380/194525801-6b1a3818-0514-45da-9741-185f7009ed63.jpg)
 
-
+#### Other functions
 * Clean, elegant presentation of folders and files in a mobile-friendly layout.
 * Zero dependencies.  No other libraries required!
 * Can handle displaying thousands of files in a folder.
