@@ -188,7 +188,6 @@ The `options` object passed to the FileExplorer class accepts the following opti
 	* recycle - A boolean hinting at whether to send items to a recycling bin (Delete) or permanently delete them (Shift + Delete).  The server is free to ignore this parameter and do whatever makes the most sense.
 * langmap - An object containing translation strings.  Support exists for most of the user interface (Default is an empty object).
 
-The [Live Demo](https://cubiclesoft.com/demos/js-fileexplorer/demo.html) utilizes nearly all of the available callbacks.  The [Live Demo source code](demo.html) was designed so as keep this documentation to a minimum and to provide decent example usage without incurring AJAX calls.
 
 Class Documentation
 -------------------
