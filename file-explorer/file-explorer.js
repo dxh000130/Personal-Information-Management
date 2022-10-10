@@ -6894,7 +6894,7 @@
 						origfolder.SetEntry(newentry);
 
 						if (fe.GetCurrentFolder() === origfolder) {
-							console.log(newentry)
+							//console.log(newentry)
 							fe.SetFocusItem(newentry.id, true);
 							fe.ScrollToFocusedItem();
 							fe.SetSelectedItems([newentry.id]);
@@ -7438,7 +7438,7 @@
 				// 	FilePath = FilePath.concat(fe.GetFocusedItemID())
 				// }
 				FilePath = GetEntries.id
-				console.log("FilePath", FilePath)
+				//console.log("FilePath", FilePath)
 				if (localStorage.getItem(FilePath) !== null){
 					document.getElementById("annotation-input").value = localStorage.getItem(FilePath);
 				}else {
@@ -7447,7 +7447,7 @@
 				var StoreAnnotatesButton = document.getElementsByClassName("btnStyle")[0];
 				StoreAnnotatesButton.onclick = function () {
 					localStorage.setItem(FilePath, document.getElementById("annotation-input").value);
-					console.log(localStorage)
+					//console.log(localStorage)
 					const folder = fe.GetCurrentFolder();
 					folder.SetEntries([]);
 					fe.settings.onrefresh(fe.GetCurrentFolder(), "");

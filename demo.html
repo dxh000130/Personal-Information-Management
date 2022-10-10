@@ -475,8 +475,8 @@
 
 				fe.addEventListener('update_tool', (currfolder, attrs) => {
 					const selectedIds = fe.GetSelectedItemIDs();
-					console.log(selectedIds[0])
-					console.log(idMap)
+					//g(selectedIds[0])
+					//console.log(idMap)
 					const enabled = !currfolder.waiting && selectedIds.length === 1 && (!('canmodify' in attrs) || attrs.canmodify);
 
 					if (enabled) {
@@ -527,7 +527,7 @@
 					AddFilesFromServer(this, fileTree["/"].children, ["/"], filejson["/"]);
 					setTimeout(function (folder, required) {
 
-						console.log('tree', fileTree['/'].children);
+						//console.log('tree', fileTree['/'].children);
 						let html = gen_tree(fileTree['/'].children);
 						SearchResult = function (childs, resultarray) {
 							var input = document.getElementsByClassName("fe_fileexplorer_searchbar")[0].value;
@@ -536,7 +536,7 @@
 								var FileName = childs[child].name.toUpperCase();
 								input = input.toUpperCase();
 								if (FileName.search(input) !== -1){
-									console.log(child)
+									//console.log(child)
 									resultarray.push(childs[child].id)
 								}
 								if (childs[child].children) {
@@ -569,13 +569,13 @@
 
 						var SearchInput = document.getElementsByClassName("fe_fileexplorer_searchbar")[0];
 						SearchInput.oninput = function () {
-							console.log("SearchInput", SearchInput.value)
+							//console.log("SearchInput", SearchInput.value)
 							if (SearchInput.value !== ""){
 								let resultarray = new Array();
 								previousDir = fe.GetCurrentFolder().GetPath();
 								const folder = fe.GetCurrentFolder();
 								SearchResult(fileTree["/"].children, resultarray);
-								console.log(resultarray);
+								//console.log(resultarray);
 
 								folder.SetEntries(Array.from(resultarray).map(itemId => ({
 									id: itemId,
@@ -644,7 +644,7 @@
 					// Simulate network delay.
 					var params = {
 						path: JSON.stringify(folder.GetPathIDs()),
-						id: entry.id,
+						id: entry.name,
 						newname: newname
 					};
 
@@ -778,7 +778,7 @@
 						initparams[$this.settings.fe_requestvar] = $this.settings.fe_requestprefix + 'upload_init';
 
 						DispatchEvent('xhr_params', [$this.settings.fe_requestprefix + 'upload_init', initparams]);
-						console.log(initparams)
+						//console.log(initparams)
 						// Prepare the file upload on the server.
 						var xhr = new this.PrepareXHR({
 							url: window.EndPointURL,
@@ -846,6 +846,10 @@
 				},
 
 				oninitdownload: function (startdownload, folder, ids, entries) {
+					//ids[0] = entries[0].name
+					for (var i = 0; i < ids.length; i++){
+						ids[i] = entries[i].name
+					}
 					// Simulate network delay.
 					setTimeout(function () {
 						// Set a URL and params to send with the request to the server.
@@ -887,6 +891,8 @@
 
 				// Calculated information must be fully synchronous (i.e. no AJAX calls).  Chromium only.
 				ondownloadurl: function (result, folder, ids, entry) {
+					console.log(entry);
+					ids=entry.name
 					result.name = (ids.length === 1 ? (entry.type === 'file' ? entry.name : entry.name + '.zip') : 'download-' + Date.now() + '.zip');
 					result.url = window.EndPointURL + '?action=download&xsrfdata=asdfasdfasdf&xsrftoken=asdfasdf&path=' + encodeURIComponent(JSON.stringify(folder.GetPathIDs())) + '&ids=' + encodeURIComponent(JSON.stringify(ids));
 					console.log(result.url)
@@ -895,7 +901,9 @@
 				oncopy: function (copied, srcpath, srcids, destfolder) {
 					// Simulate network delay.
 					var $this2 = this;
-
+					for (var i=0; i < srcids.length; i++){
+						srcids[i] = srcids[i].substring(srcids[i].lastIndexOf("/")+1,)
+					}
 					var initparams = {
 						srcpath: JSON.stringify($this2.GetPathIDs(srcpath)),
 						srcids: JSON.stringify(srcids),
@@ -1006,6 +1014,9 @@
 
 				onmove: function (moved, srcpath, srcids, destfolder) {
 					// Simulate network delay.
+					for (var i=0; i < srcids.length; i++){
+						srcids[i] = srcids[i].substring(srcids[i].lastIndexOf("/")+1,)
+					}
 					var params = {
 						srcpath: JSON.stringify(this.GetPathIDs(srcpath)),
 						srcids: JSON.stringify(srcids),
@@ -1037,6 +1048,9 @@
 
 				ondelete: function (deleted, folder, ids, entries, recycle) {
 					// Ask the user if they really want to delete/recycle the items.
+					for (var i = 0; i < ids.length; i++){
+						ids[i] = entries[i].name
+					}
 					if (!$this.settings.recycling) recycle = false;
 					if (!recycle && !confirm('Are you sure you want to permanently delete ' + (entries.length == 1 ? '"' + entries[0].name + '"' : entries.length + ' items') + '?')) deleted('Cancelled deletion');
 					else {
