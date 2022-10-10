@@ -299,6 +299,23 @@
 
 
 	<script type="text/javascript">
+		//Test for Annotation
+		localStorage.setItem("//L02.1.pdf", "CS705 StatisticalMethods")
+		localStorage.setItem("//L03.1.pdf", "CS705 HCIResearchApproaches")
+		localStorage.setItem("//L03.2.pdf", "CS705 Interview")
+		localStorage.setItem("//L03.3.pdf", "CS705 QualitativeAnalysis")
+		localStorage.setItem("//L03.4.pdf", "CS705 Literature reviews")
+		localStorage.setItem("//L04.pdf", "CS705 Interaction Design and Ethics")
+		localStorage.setItem("//CS705/L02.1.pdf", "StatisticalMethods")
+		localStorage.setItem("//CS705/L03.1.pdf", "HCIResearchApproaches")
+		localStorage.setItem("//CS705/L03.2.pdf", "Interview")
+		localStorage.setItem("//CS705/L03.3.pdf", "QualitativeAnalysis")
+		localStorage.setItem("//CS705/L03.4.pdf", "Literature reviews")
+		localStorage.setItem("//CS705/L04.pdf", "Interaction Design and Ethics")
+		localStorage.setItem("//Folder1/abc.txt", "Annotation Task Folder1")
+		localStorage.setItem("//Folder2/abc.txt", "Annotation Task Folder2")
+
+
 		window.EndPointURL = "https://www.dxh000130.top/server-side/" //Need Change
 		window.globalConfig = {
 			fileTree: {
@@ -333,16 +350,6 @@
 
 			return html;
 		}
-
-		// StoreAnnotatesButton.onclick = function () {
-		// 	localStorage.setItem(FilePath, document.getElementById("annotation-input").value);
-		//
-		// 	const folder = fe.GetCurrentFolder();
-		// 	folder.SetEntries([]);
-		// 	fe.settings.onrefresh(fe.GetCurrentFolder(), "");
-		// 	document.getElementById("annotation-input-modal").style.display = 'none'
-		//
-		// }
 		var span = document.getElementsByClassName("close")[0];
 		span.onclick = function () {
 			var modal = document.getElementById("annotation-input-modal");
@@ -1154,7 +1161,7 @@
 						data.entries.forEach(function (element) {
 							if (element.type === "folder") {
 								FilePath1 = FilePath.concat(element.name, "/")
-								console.log("FilePath1", FilePath1)
+								//console.log("FilePath1", FilePath1)
 								if (localStorage.getItem(FilePath1) !== null) {
 									annotation = localStorage.getItem(FilePath1);
 								} else {
@@ -1171,7 +1178,7 @@
 							} else {
 
 								FilePath1 = FilePath.concat(element.name)
-								console.log("FilePath1", FilePath1)
+								//console.log("FilePath1", FilePath1)
 								if (localStorage.getItem(FilePath1) !== null) {
 									annotation = localStorage.getItem(FilePath1);
 								} else {

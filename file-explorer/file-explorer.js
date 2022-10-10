@@ -7447,7 +7447,7 @@
 				var StoreAnnotatesButton = document.getElementsByClassName("btnStyle")[0];
 				StoreAnnotatesButton.onclick = function () {
 					localStorage.setItem(FilePath, document.getElementById("annotation-input").value);
-
+					console.log(localStorage)
 					const folder = fe.GetCurrentFolder();
 					folder.SetEntries([]);
 					fe.settings.onrefresh(fe.GetCurrentFolder(), "");
