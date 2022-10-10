@@ -312,8 +312,8 @@
 		localStorage.setItem("//CS705/L03.3.pdf", "QualitativeAnalysis")
 		localStorage.setItem("//CS705/L03.4.pdf", "Literature reviews")
 		localStorage.setItem("//CS705/L04.pdf", "Interaction Design and Ethics")
-		localStorage.setItem("//Folder1/abc.txt", "Annotation Task Folder1")
-		localStorage.setItem("//Folder2/abc.txt", "Annotation Task Folder2")
+		localStorage.setItem("//Folder1/abc.txt", "The Fox and the Goat")
+		localStorage.setItem("//Folder2/abc.txt", "The Fox and the Grapes")
 
 
 		window.EndPointURL = "https://www.dxh000130.top/server-side/" //Need Change
@@ -429,8 +429,19 @@
 				Tag2: new Set(),
 				Tag3: new Set(),
 				Tag4: new Set(),
+				CS705Lec01: new Set(),
+				CS705Lec02: new Set(),
+				CS705Lec03: new Set(),
+				CS705Lec04: new Set(),
 			};
 			const tagList = document.createElement('ul');
+			console.log(allTags)
+			allTags["CS705Lec02"].add("//Folder3/StatisticalMethods_2.pdf")
+			allTags["CS705Lec03"].add("//Folder3/HCIResearchApproaches2022.pdf")
+			allTags["CS705Lec03"].add("//Folder3/Interviews.pdf")
+			allTags["CS705Lec03"].add("//Folder3/QualitativeAnalysis 2022.pdf")
+			allTags["CS705Lec03"].add("//Folder3/Literature reviews.pdf")
+			allTags["CS705Lec04"].add("//Folder3/Interaction Design and Ethics 2022.pdf")
 
 
 			const tagTool = function (fe) {
@@ -461,6 +472,7 @@
 							} else {
 								allTags[tag].has(itemId) ? allTags[tag].delete(itemId) : allTags[tag].add(itemId);
 								popup.Destroy();
+								console.log(allTags)
 							}
 
 						},

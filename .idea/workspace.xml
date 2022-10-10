@@ -4,7 +4,11 @@
     <list default="true" id="4d72e0d3-e92f-48a3-baa9-7648bae77290" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/demo.html" beforeDir="false" afterPath="$PROJECT_DIR$/demo.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file-explorer/file-explorer.js" beforeDir="false" afterPath="$PROJECT_DIR$/file-explorer/file-explorer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/file/Folder1/abc.txt" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/file/Folder1/abc.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/file/Folder2/abc.txt" beforeDir="false" afterPath="$PROJECT_DIR$/server-side/file/Folder2/abc.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/file/Folder3/1_3_Uninformed_Search_v4-1.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/file/Folder3/LitReview_Otago.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server-side/file/Folder3/TheThreeParadigmsofHCI.pdf" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +75,7 @@
       <workItem from="1665173071948" duration="2023000" />
       <workItem from="1665374624634" duration="1932000" />
       <workItem from="1665379937489" duration="1378000" />
+      <workItem from="1665384352827" duration="1078000" />
     </task>
     <servers />
   </component>
